@@ -17,23 +17,25 @@
   <meta http-equiv="window-target" content="_top">
   
   
-  <title>区块链简介 | Hexo</title>
-  <meta name="description" content="概况任何事物的发展，从来不是一蹴而就的。 商贸合作中签订的合同，怎么确保对方能遵守和执行？ 餐厅宣称刚从海里打捞上来的三文鱼，怎么证明捕捞时间和运输中的卫生？ 数字世界里，怎么证明你对资产的所有？ 这些看似很难解决的问题，在区块链的世界里已经有了初步的答案。  从数字货币说起货币是人类文明发展过程中的一大发明，最重要的职能包括价值尺度、流通手段、贮藏手段。很难想象离开了货币，现代社会庞大而复杂的经">
-<meta name="keywords" content="Blockchain">
+  <title>如何书写 Node DEV API 文档  | Hexo</title>
+  <meta name="description" content="为什么需要 API 文档目前大的环境下面，基本服务都以单体服务转换成前后端分离的服务，客户端作为调用方，服务端作为提供方需要给予到调用方通俗易懂的文档。 常见 API 文档有哪些 gitbook Modern documentation format and toolchain using Git and Markdown       Usage 优点： 类似书籍的管理方式（适合写书） 支持多人协">
+<meta name="keywords" content="Node.js,Swagger Doc">
 <meta property="og:type" content="article">
-<meta property="og:title" content="区块链简介">
-<meta property="og:url" content="https://sensitivemix.github.io/2018/03/09/区块链简介/index.html">
+<meta property="og:title" content="如何书写 Node DEV API 文档 ">
+<meta property="og:url" content="https://sensitivemix.github.io/2019/04/16/如何书写-Node-DEV-API-文档/index.html">
 <meta property="og:site_name" content="孙祁的博客">
-<meta property="og:description" content="概况任何事物的发展，从来不是一蹴而就的。 商贸合作中签订的合同，怎么确保对方能遵守和执行？ 餐厅宣称刚从海里打捞上来的三文鱼，怎么证明捕捞时间和运输中的卫生？ 数字世界里，怎么证明你对资产的所有？ 这些看似很难解决的问题，在区块链的世界里已经有了初步的答案。  从数字货币说起货币是人类文明发展过程中的一大发明，最重要的职能包括价值尺度、流通手段、贮藏手段。很难想象离开了货币，现代社会庞大而复杂的经">
+<meta property="og:description" content="为什么需要 API 文档目前大的环境下面，基本服务都以单体服务转换成前后端分离的服务，客户端作为调用方，服务端作为提供方需要给予到调用方通俗易懂的文档。 常见 API 文档有哪些 gitbook Modern documentation format and toolchain using Git and Markdown       Usage 优点： 类似书籍的管理方式（适合写书） 支持多人协">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://yeasy.gitbooks.io/blockchain_guide/born/_images/ledger.jpg">
-<meta property="og:updated_time" content="2019-04-14T02:29:42.000Z">
+<meta property="og:image" content="https://uploader.shimo.im/f/45J30B4D0d4L7CWC.png!thumbnail">
+<meta property="og:image" content="https://uploader.shimo.im/f/UyoiKuM54H08ylGa.png!thumbnail">
+<meta property="og:image" content="https://uploader.shimo.im/f/fHtWq6Xh6gcnZNZm.png!thumbnail">
+<meta property="og:updated_time" content="2019-04-16T09:03:02.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="区块链简介">
-<meta name="twitter:description" content="概况任何事物的发展，从来不是一蹴而就的。 商贸合作中签订的合同，怎么确保对方能遵守和执行？ 餐厅宣称刚从海里打捞上来的三文鱼，怎么证明捕捞时间和运输中的卫生？ 数字世界里，怎么证明你对资产的所有？ 这些看似很难解决的问题，在区块链的世界里已经有了初步的答案。  从数字货币说起货币是人类文明发展过程中的一大发明，最重要的职能包括价值尺度、流通手段、贮藏手段。很难想象离开了货币，现代社会庞大而复杂的经">
-<meta name="twitter:image" content="https://yeasy.gitbooks.io/blockchain_guide/born/_images/ledger.jpg">
+<meta name="twitter:title" content="如何书写 Node DEV API 文档 ">
+<meta name="twitter:description" content="为什么需要 API 文档目前大的环境下面，基本服务都以单体服务转换成前后端分离的服务，客户端作为调用方，服务端作为提供方需要给予到调用方通俗易懂的文档。 常见 API 文档有哪些 gitbook Modern documentation format and toolchain using Git and Markdown       Usage 优点： 类似书籍的管理方式（适合写书） 支持多人协">
+<meta name="twitter:image" content="https://uploader.shimo.im/f/45J30B4D0d4L7CWC.png!thumbnail">
   <!-- Canonical links -->
-  <link rel="canonical" href="https://sensitivemix.github.io/2018/03/09/区块链简介/index.html">
+  <link rel="canonical" href="https://sensitivemix.github.io/2019/04/16/如何书写-Node-DEV-API-文档/index.html">
   
     <link rel="alternate" href="/atom.xml" title="孙祁的博客" type="application/atom+xml">
   
@@ -342,14 +344,14 @@
   
 <main class="main" role="main">
   <div class="content">
-  <article id="post-区块链简介" class="article article-type-post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <article id="post-如何书写-Node-DEV-API-文档" class="article article-type-post" itemscope="" itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      区块链简介
+      如何书写 Node DEV API 文档 
     </h1>
   
 
@@ -357,168 +359,115 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2018/03/09/区块链简介/" class="article-date">
-	  <time datetime="2018-03-09T07:15:57.000Z" itemprop="datePublished">2018-03-09</time>
+	<a href="/2019/04/16/如何书写-Node-DEV-API-文档/" class="article-date">
+	  <time datetime="2019-04-16T09:02:20.000Z" itemprop="datePublished">2019-04-16</time>
 	</a>
 </span>
         
-  <span class="article-category">
-    <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/前沿技术/">前沿技术</a>
-  </span>
-
         
   <span class="article-tag">
     <i class="icon icon-tags"></i>
-	<a class="article-tag-link" href="/tags/Blockchain/">Blockchain</a>
+	<a class="article-tag-link" href="/tags/Node-js/">Node.js</a>, <a class="article-tag-link" href="/tags/Swagger-Doc/">Swagger Doc</a>
   </span>
 
 
         
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/03/09/区块链简介/#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/04/16/如何书写-Node-DEV-API-文档/#comments" class="article-comment-link">评论</a></span>
         
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <h2 id="概况"><a href="#概况" class="headerlink" title="概况"></a>概况</h2><p><strong>任何事物的发展，从来不是一蹴而就的。</strong></p>
-<p>商贸合作中签订的合同，怎么确保对方能遵守和执行？</p>
-<p>餐厅宣称刚从海里打捞上来的三文鱼，怎么证明捕捞时间和运输中的卫生？</p>
-<p>数字世界里，怎么证明你对资产的所有？</p>
-<p>这些看似很难解决的问题，在区块链的世界里已经有了初步的答案。</p>
-<hr>
-<h2 id="从数字货币说起"><a href="#从数字货币说起" class="headerlink" title="从数字货币说起"></a>从数字货币说起</h2><p>货币是人类文明发展过程中的一大发明，最重要的职能包括价值尺度、流通手段、贮藏手段。很难想象离开了货币，现代社会庞大而复杂的经济和金融体系还能否持续运转。</p>
-<p>历史上，货币的形态经历了多个阶段的演化，包括实物货币、金属货币、代用货币、信用货币、电子货币、数字货币等。货币自身的价值依托也从实物价值、发行方信用价值，到今天出现的对信息系统（包括算法、数学、密码学、软件等）的信任价值。</p>
-<h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><p>一般等价物都可以作为货币使用。然而平时最常见的还是纸币本位制，既方便携带、不易仿制、又相对容易辩伪。</p>
-<p><em>注意，严格来讲，货币（money）不等于现金或通货（cash，currency），货币的范围更广。</em></p>
-<p>或许有人认为信用卡相对纸币形式更方便。相对于信用卡这样的集中式支付体系来说，货币提供了更好的匿名性。另外，一旦碰到系统故障、断网、没有刷卡机器等情况，信用卡就不可用了。</p>
-<p>无论是货币，还是信用卡模式，都需要额外的系统（例如银行）来完成生产、分发、管理等操作，带来很大的额外成本和使用风险。诸如伪造、信用卡诈骗、盗刷、转账等安全事件屡见不鲜。</p>
-<p>很自然的，如果能实现一种数字货币，保持既有货币的这些特性，消除纸质货币的缺陷，无疑将带来巨大的社会变革，极大提高经济活动的运作效率。</p>
-<h2 id="数字货币相比于传统货币"><a href="#数字货币相比于传统货币" class="headerlink" title="数字货币相比于传统货币"></a>数字货币相比于传统货币</h2><p>让我们来对比现在的数字货币和现实生活中的纸币：</p>
-<table>
-<thead>
-<tr>
-<th>属性</th>
-<th>分析</th>
-<th>胜出方</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>便携</td>
-<td>这点上应该没有争议，显然数字形式的货币胜出。</td>
-<td>数字货币</td>
-</tr>
-<tr>
-<td>防伪</td>
-<td>这点上应该说两者各有千秋，但数字货币可能略胜一筹。纸币依靠的是各种设计（纸张、油墨、暗纹、夹层等）上的精巧，数字货币依靠的则是密码学上的保障。事实上，纸币的伪造时有发生，但数字货币的伪造明面上还没能实现。</td>
-<td>数字货币</td>
-</tr>
-<tr>
-<td>辩伪</td>
-<td>纸币即使依托验钞机仍会有误判情况，数字货币依靠密码学基本不可能出错。数字货币胜出。</td>
-<td>数字货币</td>
-</tr>
-<tr>
-<td>匿名</td>
-<td>通常情况下，两者都能提供很好的匿名性。但都无法防御有意的追踪。</td>
-<td>平局</td>
-</tr>
-<tr>
-<td>交易</td>
-<td>对纸币来说，谁持有纸币谁就是合法拥有者，交易通过纸币自身的转移即可完成。对数字货币来说则复杂的多，因为任何数字物品都是可以被复制的，因此需要额外的机制。为此，比特币发明了区块链技术来确保可靠不可篡改的交易。</td>
-<td>纸币</td>
-</tr>
-<tr>
-<td>资源</td>
-<td>100 美元钞票的生产成本是 0.1 美元左右。100 面额人民币的生产成本说法众多，但估计应该在几毛到几块范围内。数字货币消耗的资源则复杂的多，以最坏情况估计，算出来多少就要消耗多少电（往往要更多）。</td>
-<td>纸币</td>
-</tr>
-<tr>
-<td>发行</td>
-<td>纸币的发行需要第三方机构的参与，数字货币则通过分布式算法来完成发行。在人类历史上，通胀和通缩往往是不合理地发行货币造成的；数字货币尚无机会被验证，在这方面的表现还有待观察。</td>
-<td>平局</td>
-</tr>
-</tbody>
-</table>
-<p>可见，数字货币并非在所有领域都优于已有的货币形式。不带前提的在所有领域都鼓吹数字货币并不是一种严谨的态度，应该针对具体情况具体分析。实际上，仔细观察目前支持数字货币的交易机构就会发现端倪，当前还没有一种数字货币能完整起到货币的职能。</p>
-<p>最后，虽然当前的数字货币“实验”已经取得了巨大成功，但可见的局限也很明显：其依赖的分布式账本技术还缺乏大规模场景下考验；性能和安全性还有待提升；资源的消耗还过高等等。这些问题还有待于相关技术的进一步发展。</p>
-<hr>
-<h3 id="实现挑战"><a href="#实现挑战" class="headerlink" title="实现挑战"></a>实现挑战</h3><p>设计和实现一个数字货币并非易事。</p>
-<p>在现实生活中，因为纸币具备可转移性，相对容易地完成价值的交割。但是因为电子内容天然具备零复制成本，无法通过发送电子内容来完成价值的转移。持有人可以试图将同一份电子货币发给多个人，这种被称为“双重支付攻击（Double-Spent）”。</p>
-<p>也许有人会讲，当前银行中的货币都是电子化的，因为通过账号里面的数字记录了资产。说的没错，这种电子货币模式有人称为“数字货币 1.0”，它实际上是假定存在一个安全可靠的第三方记账机构来实现，这个机构利用信用作为抵押，来完成交易。</p>
-<p>这种中心化控制下的数字货币实现相对简单，但需要一个中心管控系统。但是，很多时候并不存在一个安全可靠的第三方记账机构来充当这个中心管控的角色。</p>
-<p>例如，贸易两国可能缺乏足够的外汇储备；网络上的匿名双方进行直接买卖；交易的两个机构彼此互不信任，找不到双方都认可的第三方担保；汇率的变化；可能无法连接到第三方的系统；第三方的系统可能会出现故障……</p>
-<p>总结一下，在去中心化的场景下，存在几个难题：</p>
-<ul>
-<li><p>货币的防伪：谁来负责验证货币；</p>
-</li>
-<li><p>货币交易：如何确定货币从一方转移到另外一方；</p>
-</li>
-<li><p>避免双重支付：如何避免出现双重支付。</p>
-</li>
-</ul>
-<p>好吧，这事其实不太容易。</p>
-<hr>
-<h3 id="比特币出现"><a href="#比特币出现" class="headerlink" title="比特币出现"></a>比特币出现</h3><p>在不存在一个第三方记账机构的情况下，如何实现一个数字货币系统呢？</p>
-<p>近三十年来，数字货币技术朝着这个方向努力，经历了几代演进，包括 <a href="http://www.hit.bme.hu/~buttyan/courses/BMEVIHIM219/2009/Chaum.BlindSigForPayment.1982.PDF" target="_blank" rel="noopener">e-Cash</a>、<a href="http://en.wikipedia.org/wiki/Hashcash" target="_blank" rel="noopener">HashCash</a>、<a href="http://www.weidai.com/bmoney.txt" target="_blank" rel="noopener">B-money</a>等。</p>
-<p>1983 年，<a href="https://en.wikipedia.org/wiki/David_Chaum" target="_blank" rel="noopener">David Chaum</a> 最早提出<a href="http://www.hit.bme.hu/~buttyan/courses/BMEVIHIM219/2009/Chaum.BlindSigForPayment.1982.PDF" target="_blank" rel="noopener">ecash</a>，并于 1989 年创建了 <a href="https://en.wikipedia.org/wiki/Digicash" target="_blank" rel="noopener">Digicash</a> 公司。ecash 系统是首个匿名化的数字加密货币（anonymous cryptographic electronic money, or electronic cash system），基于 David Chaum 发明的盲签名技术，曾被应用于银行小额支付中。ecash 依赖于一个中心化的中介机构，导致它最终失败。</p>
-<p>1997 年，<a href="https://en.wikipedia.org/wiki/Adam_Back" target="_blank" rel="noopener">Adam Back</a> 发明了 <a href="http://en.wikipedia.org/wiki/Hashcash" target="_blank" rel="noopener">Hashcash</a>，来解决邮件系统中 DoS 攻击问题。Hashcash 首次提出用工作量证明（Proof of Work，PoW）机制来获取额度，该机制后来被后续数字货币技术所采用。</p>
-<p>1998 年，<a href="http://www.weidai.com/" target="_blank" rel="noopener">Wei Dai</a> 提出了 <a href="http://www.weidai.com/bmoney.txt" target="_blank" rel="noopener">B-money</a>，将 PoW 引入数字货币生成过程中。B-money 同时是首个面向去中心化设计的数字货币。从概念上看已经比较完善，但是很遗憾的是，其未能提出具体的设计实现。</p>
-<p>上面这些数字货币都或多或少的依赖于一个第三方系统的信用担保。直到比特币的出现，将 PoW 与共识机制结合在一起，<strong>首次从实践意义上实现了一套去中心化的数字货币系统</strong>。</p>
-<p>比特币网络无需任何管理机构，自身通过数学和密码学原理来确保了所有交易的成功进行，比特币自身的价值是通过背后的计算力为背书。这也促使人们开始思考在未来的数字世界中，该如何衡量价值，如何发行货币。</p>
-<p>目前看来，数字货币比较有影响力的模式有两种，一种是类似 paypal 这样的选择跟已有的系统合作，成为代理；一种是以比特币这样的完全丢弃已有体系的分布式技术。</p>
-<p>现在还很难讲哪种模式将成为未来的主流，甚至未来还可能出现更先进的技术。但对比特币这一类数字货币的设计进行探索，将是一件十分有趣的事情。</p>
-<hr>
-<h3 id="什么是区块链"><a href="#什么是区块链" class="headerlink" title="什么是区块链"></a>什么是区块链</h3><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>区块链（Blockchain）技术自身仍然在飞速发展中，目前还缺乏统一的规范和标准。</p>
-<p><a href="https://en.wikipedia.org/wiki/Block_chain_(database" target="_blank" rel="noopener">wikipedia</a> 给出的定义为：</p>
-<blockquote>
-<p>A blockchain —originally, block chain —is a distributed database that maintains a continuously-growing list of data records hardened against tampering and revision. It consists of data structure blocks—which hold exclusively data in initial blockchain implementations, and both data and programs in some of the more recent implementations—with each block holding batches of individual transactions and the results of any blockchain executables. Each block contains a timestamp and information linking it to a previous block.</p>
+        <h2 id="为什么需要-API-文档"><a href="#为什么需要-API-文档" class="headerlink" title="为什么需要 API 文档"></a>为什么需要 API 文档</h2><p>目前大的环境下面，基本服务都以单体服务转换成前后端分离的服务，客户端作为调用方，服务端作为提供方需要给予到调用方通俗易懂的文档。</p>
+<h2 id="常见-API-文档有哪些"><a href="#常见-API-文档有哪些" class="headerlink" title="常见 API 文档有哪些"></a>常见 API 文档有哪些</h2><ol>
+<li><a href="https://github.com/GitbookIO/gitbook" target="_blank" rel="noopener">gitbook</a><blockquote>
+<p>Modern documentation format and toolchain using Git and Markdown </p>
 </blockquote>
-<p>最早区块链技术雏形出现在比特币项目中。作为比特币背后的分布式记账平台，在无集中式管理的情况下，比特币网络稳定运行了近八年时间，支持了海量的交易记录，并未出现严重的漏洞。</p>
-<p><em>注：比特币历史上唯一已知的漏洞事件曾导致比特币的恶意增发，但问题很快被发现并修正，相关非法交易被撤销。</em></p>
-<p>公认的最早关于区块链的描述性文献是中本聪所撰写的 <a href="https://bitcoin.org/bitcoin.pdf" target="_blank" rel="noopener">比特币：一种点对点的电子现金系统</a>，但该文献重点在于讨论比特币系统，实际上并没有明确提出区块链的定义和概念。在其中，区块链被描述为用于记录比特币交易的账目历史。</p>
-<p><img src="https://yeasy.gitbooks.io/blockchain_guide/born/_images/ledger.jpg" alt="古老的账本"></p>
-<p><em>图 1.4.3.1 - 古老的账本</em></p>
-<p>记账技术历史悠久，<a href="https://zh.wikipedia.org/wiki/%E5%A4%8D%E5%BC%8F%E7%B0%BF%E8%AE%B0" target="_blank" rel="noopener">现代复式记账系统</a>（Double Entry Bookkeeping）是由意大利数学家卢卡·帕西奥利，1494 年在《Summa de arithmetica, geometrica, proportioni et proportionalità》一书中最早制定。复式记账法对每一笔账目同时记录来源和去向，首次将对账验证功能引入记账过程，提升了记账的可靠性。从这个角度来看，<strong>区块链是首个自带对账功能的数字记账技术实现</strong>。</p>
-<p>更广泛意义地看，区块链属于一种去中心化的记录技术。参与到系统上的节点，可能不属于同一组织、彼此无需信任；区块链数据由所有节点共同维护，每个参与维护节点都能复制获得一份完整记录的拷贝。</p>
-<p>跟传统的记账技术相比，其特点应该包括：</p>
+</li>
+</ol>
+<p><img src="https://uploader.shimo.im/f/45J30B4D0d4L7CWC.png!thumbnail" alt="图片"></p>
 <ul>
-<li><p>维护一条不断增长的链，只可能添加记录，而发生过的记录都不可篡改；</p>
+<li><a href="https://github.com/GitbookIO/gitbook/blob/master/docs/setup.md" target="_blank" rel="noopener">Usage</a></li>
+<li>优点：<ul>
+<li>类似书籍的管理方式（适合写书）</li>
+<li>支持多人协作，支持保存在 Github 中</li>
+<li>支持 Build 成静态网页，部署方便</li>
+</ul>
 </li>
-<li><p>去中心化，或者说多中心化，无需集中的控制而能达成共识，实现上尽量分布式；</p>
+<li>缺点：<ul>
+<li>需要熟悉 <strong>Markdown </strong>语法，不是实时生成，需要使用 <a href="https://github.com/GitbookIO/gitbook-cli" target="_blank" rel="noopener">Git-cli</a> 打包文件</li>
+<li>以一本书籍作为起点，只能放到单个项目中</li>
+</ul>
 </li>
-<li><p>通过密码学的机制来确保交易无法抵赖和破坏，并尽量保护用户信息和记录的隐私性。</p>
+<li>总结：适合写书籍，不太适合 API 开发文档</li>
+</ul>
+<ol start="2">
+<li><a href="https://github.com/jsdoc3/jsdoc" target="_blank" rel="noopener">jsdoc</a><blockquote>
+<p>An API documentation generator for JavaScript.</p>
+</blockquote>
+</li>
+</ol>
+<p><img src="https://uploader.shimo.im/f/UyoiKuM54H08ylGa.png!thumbnail" alt="图片"></p>
+<ul>
+<li><a href="http://usejsdoc.org/" target="_blank" rel="noopener">Usage</a></li>
+<li>优点：<ul>
+<li>功能丰富，支持引入块状注释（<a href="https://www.html.cn/doc/jsdoc/tags-example.html" target="_blank" rel="noopener">Block Tags</a>）</li>
+<li>功能丰富，支持内联注释（<a href="https://www.html.cn/doc/jsdoc/tags-inline-link.html" target="_blank" rel="noopener">Inline Tags</a>）</li>
+<li>强大的社区支持，各个平台支持 jsdocs 插件</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>有一定的学习成本，需要学习它的块状注释使用方式</li>
+<li>UI 只能单项目使用，每个项目的 DOC UI 独立 </li>
+</ul>
+</li>
+<li>在线样例（<a href="https://github.com/SoftwareBrothers/better-docs" target="_blank" rel="noopener">b</a><a href="https://softwarebrothers.github.io/admin-bro-dev/index.html" target="_blank" rel="noopener">etter-</a><a href="https://github.com/SoftwareBrothers/better-docs" target="_blank" rel="noopener">d</a><a href="https://github.com/SoftwareBrothers/better-docs" target="_blank" rel="noopener">ocs</a> <a href="https://nhnent.github.io/tui.jsdoc-template/latest/" target="_blank" rel="noopener">tui-jsdoc-template</a>)</li>
+<li>总结：适合深度定制项目，比如说我们对外开放 API 给开发者使用。</li>
+</ul>
+<ol start="3">
+<li><a href="https://github.com/Surnet/swagger-jsdoc" target="_blank" rel="noopener">swagger-jsdoc</a><blockquote>
+<p>Generates swagger doc based on JSDoc.</p>
+</blockquote>
+</li>
+</ol>
+<p><img src="https://uploader.shimo.im/f/fHtWq6Xh6gcnZNZm.png!thumbnail" alt="图片"></p>
+<ul>
+<li><a href="https://github.com/Surnet/swagger-jsdoc/tree/master/example/v2" target="_blank" rel="noopener">Usage</a></li>
+<li>优点：<ul>
+<li>集合 Swagger，支持按照类似 JSDoc 方式生成文档</li>
+<li>支持错误定位，如果注释书写错误，能够抛出具体的错误栈</li>
+<li>支持 <a href="https://github.com/Surnet/swagger-jsdoc/blob/master/docs/CLI.md" target="_blank" rel="noopener">CLI</a>，自由选择文件输出位置</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>书写格式不友好，强格式要求，对于新手来说不容易上手，官方样例较少，很多语法需要对于 Swagger YAML 格式，自己理解进行映射</li>
+<li>没有能够完成安装 JSDoc 格式来书写注释，更倾向于 YAML 文件</li>
+</ul>
 </li>
 </ul>
-<p>更进一步的，还可以将智能合约跟区块链结合到一起，让其提供除了交易（比特币区块链已经支持简单的脚本计算）功能外更灵活的合约功能，执行更为复杂的操作。这样扩展之后的区块链，已经超越了单纯数据记录的功能了，实际上带有点“普适计算”的意味了。</p>
-<hr>
-<h3 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h3><p>区块链的基本原理理解起来并不难。基本概念包括：</p>
+<ol start="4">
+<li><a href="https://github.com/SensitiveMix/doc-generators" target="_blank" rel="noopener">doc-generators</a><blockquote>
+<p>simple generator handler for swagger</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * @typedef Product</span><br><span class="line"> * @property &#123;integer&#125; id</span><br><span class="line"> * @property &#123;string&#125; name.required - Some description for product</span><br><span class="line"> * @property &#123;Array.&lt;Point&gt;&#125; Point</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * This function comment is parsed by doctrine</span><br><span class="line"> * sdfkjsldfkj</span><br><span class="line"> * @route POST /users</span><br><span class="line"> * @param &#123;Point.model&#125; point.body.required - the new point</span><br><span class="line"> * @group foo - Operations about user</span><br><span class="line"> * @param &#123;string&#125; email.query.required - username or email</span><br><span class="line"> * @param &#123;string&#125; password.query.required - user&apos;s password.</span><br><span class="line"> * @param &#123;enum&#125; status.query.required - Status values that need to be considered for filter - eg: available,pending</span><br><span class="line"> * @operationId retrieveFooInfo</span><br><span class="line"> * @produces application/json application/xml</span><br><span class="line"> * @consumes application/json application/xml</span><br><span class="line"> * @returns &#123;Response.model&#125; 200 - An array of user info</span><br><span class="line"> * @returns &#123;Product.model&#125;  default - Unexpected error</span><br><span class="line"> * @returns &#123;Array.&lt;Point&gt;&#125; Point - Some description for point</span><br><span class="line"> * @headers &#123;integer&#125; 200.X-Rate-Limit - calls per hour allowed by the user</span><br><span class="line"> * @headers &#123;string&#125; 200.X-Expires-After - 	date in UTC when token expires</span><br><span class="line"> * @security JWT</span><br><span class="line"> */</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+</ol>
 <ul>
-<li><p>交易（Transaction）：一次操作，导致账本状态的一次改变，如添加一条记录；</p>
+<li><a href="https://github.com/SensitiveMix/doc-generators/blob/master/example/router.js" target="_blank" rel="noopener">Usage</a></li>
+<li>优点：<ul>
+<li>支持集成 Swagger，支持按照类似 JSDoc 方式生成文档</li>
+<li>友好的文档的注释，贴合 IDE 函数注释</li>
+</ul>
 </li>
-<li><p>区块（Block）：记录一段时间内发生的交易和状态结果，是对当前账本状态的一次共识；</p>
-</li>
-<li><p>链（Chain）：由一个个区块按照发生顺序串联而成，是整个状态变化的日志记录。</p>
+<li>缺点：<ul>
+<li>实现可用的基础上，需要支持到 IDE，方便一键生成，支持自动化<h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * verify quarantine site</span><br><span class="line"> * @route POST /ui/quarantine/v1/verify_od_dedicated_quarantine_site</span><br><span class="line"> * @group quarantine</span><br><span class="line"> * @param &#123;QuarantineJSON.model&#125; body.body.required - post body</span><br><span class="line"> * @returns &#123;object&#125; 200 - An array of handler info</span><br><span class="line"> * @returns &#123;Error&#125; 400 - invalid site</span><br><span class="line"> * @returns &#123;Error&#125; 500 - internal error</span><br><span class="line"> */</span><br><span class="line">/**</span><br><span class="line"> * JSON parameters require a model. This one just has &quot;name&quot;</span><br><span class="line"> * @typedef QuarantineJSON</span><br><span class="line"> * @property &#123;string&#125; site.required - quarantine site info</span><br><span class="line"> */</span><br><span class="line">    server.post(&apos;/ui/quarantine/v1/verify_od_dedicated_quarantine_site&apos;, middleware.other.verifyLoginInfo,</span><br><span class="line">        rbac.quarantine.write, quarantine.verifyOdDedicatedQuarantineSite);</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>如果把区块链作为一个状态机，则每次交易就是试图改变一次状态，而每次共识生成的区块，就是参与者对于区块中所有交易内容导致状态改变的结果进行确认。</p>
-<p><em>图 1.4.3.2 - 区块链示例</em></p>
-<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><p>根据参与者的不同，可以分为公开（Public）链、联盟（Consortium）链和私有（Private）链。</p>
-<p>公开链，顾名思义，任何人都可以参与使用和维护，典型的如比特币区块链，信息是完全公开的。</p>
-<p>如果引入许可机制，包括私有链和联盟链两种。</p>
-<p>私有链，则是集中管理者进行限制，只能得到内部少数人可以使用，信息不公开。</p>
-<p>联盟链则介于两者之间，由若干组织一起合作维护一条区块链，该区块链的使用必须是有权限的管理，相关信息会得到保护，典型如银联组织。</p>
-<p>目前来看，公开链将会更多的吸引社区和媒体的眼球，但更多的商业价值应该在联盟链和私有链上。</p>
-<p>根据使用目的和场景的不同，又可以分为以数字货币为目的的货币链，以记录产权为目的的产权链，以众筹为目的的众筹链等。</p>
-<hr>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>区块链是第一个试图自带信任化和防止篡改的分布式记录系统。它的出现，让大家意识到，除了互联网这样的尽力而为的基础设施外，我们还能打造一个彼此信任的基础设施。</p>
-<p>类似比特币这样的大规模长时间自治运行的系统，也为区块链技术的应用开启了更多遐想的空间。如果人与人之间的交易无法伪造，合同都能确保可靠执行，世界是不是更美好一些了呢？这是技术进步再次给人类发展带来福利。</p>
-<p>不提这种去中心化的金融系统是否能在现实中普及，在跨国交易、跨组织合作日益频繁的今天，已经有了不少有意义的尝试和参考。</p>
-<p>更进一步，比特币只是基于区块链技术的一种金融应用（而且是直接嵌入区块链中），区块链技术还能带来更通用的计算能力。<a href="https://hyperledger.org/" target="_blank" rel="noopener">Hyperledger</a> 和 <a href="https://www.ethereum.org/" target="_blank" rel="noopener">Ethereum</a> 就试图做类似的事情，基于区块链再做一层平台层，让别人基于平台开发应用变得更简单。</p>
-<p>另外，区块链本身可以作为分布式存储，也自然可以作为分布式计算引擎。可以想象，整个加入集群的设备都是计算引擎，大家通过付费来使用计算力，是不是就有点普适计算的意味了？</p>
-<p>有理由相信，随着更多商业应用场景的出现，区块链技术将在未来金融和信息技术领域占据一席之地。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * HTTP API statistics</span><br><span class="line"> * @route GET /monit/v1/metric</span><br><span class="line"> * @group monit</span><br><span class="line"> * @param &#123;string&#125; sort.query - asc | desc</span><br><span class="line"> * @param &#123;string&#125; direction.query - count | avarageMillisecondCost | routeName</span><br><span class="line"> * @returns &#123;object&#125; 200 - An array of user info</span><br><span class="line"> * @returns &#123;metrics.model&#125; default - Unexpected error</span><br><span class="line"> */</span><br><span class="line">/**</span><br><span class="line"> * @typedef metrics</span><br><span class="line"> * @property &#123;string&#125; routeName.required - &apos;getuiadminv1company_plans&apos;</span><br><span class="line"> * @property &#123;number&#125; count.required - route invoke times</span><br><span class="line"> * @property &#123;number&#125; avarageMillisecondCost.required - route avg second cost</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">server.get(&quot;/monit/v1/metric&quot;, validator.query(&#123;</span><br><span class="line">    type: &apos;object&apos;,</span><br><span class="line">    properties: &#123;</span><br><span class="line">        sort: &#123; type: &apos;string&apos;, enum: [&apos;count&apos;] &#125;,</span><br><span class="line">        direction: &#123; type: &apos;string&apos;, enum: [&apos;asc&apos;, &apos;desc&apos;] &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;), monitService.apiMetricHandlers);</span><br></pre></td></tr></table></figure>
+<p>项目地址：<a href="https://github.com/SensitiveMix/doc-generators" target="_blank" rel="noopener">https://github.com/SensitiveMix/doc-generators</a><br>喜欢的同学请点个 Star 😆</p>
 
       
     </div>
@@ -528,7 +477,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="https://sensitivemix.github.io/2018/03/09/区块链简介/" title="区块链简介" target="_blank" rel="external">https://sensitivemix.github.io/2018/03/09/区块链简介/</a>
+      <a href="https://sensitivemix.github.io/2019/04/16/如何书写-Node-DEV-API-文档/" title="如何书写 Node DEV API 文档 " target="_blank" rel="external">https://sensitivemix.github.io/2019/04/16/如何书写-Node-DEV-API-文档/</a>
     </li>
     
     <li class="post-copyright-license">
@@ -574,13 +523,9 @@
   
   <ul class="pager pull-left">
     
-    <li class="prev">
-      <a href="/2018/04/08/区块链的运行原理/" title="区块链的运行原理"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
-    </li>
-    
     
     <li class="next">
-      <a href="/2018/02/26/Javascript-设计模式与开发实践总结/" title="Javascript 设计模式与开发实践总结"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/2019/01/07/数据库原理/" title="数据库原理"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
     
