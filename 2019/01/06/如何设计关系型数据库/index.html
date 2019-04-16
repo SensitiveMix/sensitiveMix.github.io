@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000">
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top">
+  
+  
+  <title>如何设计关系型数据库 | Hexo</title>
+  <meta name="description" content="RDBMS从 0 到 1 设计关系型数据库，总共分为两个部分：  程序实例  存储管理模块 缓存模块（需要设计淘汰机制 SQL 解析 日志管理（记录所有操作） 权限划分（授权模块） 容灾机制（保证数据库高可用） 索引管理（保证数据查询执行效率） 锁管理（保证数据 ACID）   存储模块  文件系统（保证数据持久化）       索引模块为什么使用索引  快速查询数据，避免全表扫描，提升检索效率">
+<meta name="keywords" content="Database,MongoDB">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何设计关系型数据库">
+<meta property="og:url" content="https://sensitivemix.github.io/2019/01/06/如何设计关系型数据库/index.html">
+<meta property="og:site_name" content="孙祁的博客">
+<meta property="og:description" content="RDBMS从 0 到 1 设计关系型数据库，总共分为两个部分：  程序实例  存储管理模块 缓存模块（需要设计淘汰机制 SQL 解析 日志管理（记录所有操作） 权限划分（授权模块） 容灾机制（保证数据库高可用） 索引管理（保证数据查询执行效率） 锁管理（保证数据 ACID）   存储模块  文件系统（保证数据持久化）       索引模块为什么使用索引  快速查询数据，避免全表扫描，提升检索效率">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-04-14T02:29:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何设计关系型数据库">
+<meta name="twitter:description" content="RDBMS从 0 到 1 设计关系型数据库，总共分为两个部分：  程序实例  存储管理模块 缓存模块（需要设计淘汰机制 SQL 解析 日志管理（记录所有操作） 权限划分（授权模块） 容灾机制（保证数据库高可用） 索引管理（保证数据查询执行效率） 锁管理（保证数据 ACID）   存储模块  文件系统（保证数据持久化）       索引模块为什么使用索引  快速查询数据，避免全表扫描，提升检索效率">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://sensitivemix.github.io/2019/01/06/如何设计关系型数据库/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="孙祁的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/SensitiveMix" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">jack sun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Full Stack Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> nanjing, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech="">
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope="" itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/SensitiveMix" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope="" itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/前沿技术/">前沿技术</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习资料/">学习资料</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发工具/">开发工具</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/总结/">总结</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/计算机网络/">计算机网络</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BestPractice/">BestPractice</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Blockchain/">Blockchain</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C-Pointer/">C Pointer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CI/">CI</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cluster/">Cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CodeCoverage/">CodeCoverage</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Database/">Database</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DesignPattern/">DesignPattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Frontend/">Frontend</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/InfluxDB/">InfluxDB</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/">Javascript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jquery/">Jquery</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Login/">Login</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MockService/">MockService</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MongoDB/">MongoDB</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Socket-io/">Socket.io</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SqlServer/">SqlServer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tutorial/">Tutorial</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/BestPractice/" style="font-size: 13px;">BestPractice</a> <a href="/tags/Blockchain/" style="font-size: 13.33px;">Blockchain</a> <a href="/tags/C-Pointer/" style="font-size: 13px;">C Pointer</a> <a href="/tags/CI/" style="font-size: 13px;">CI</a> <a href="/tags/Cluster/" style="font-size: 13px;">Cluster</a> <a href="/tags/CodeCoverage/" style="font-size: 13px;">CodeCoverage</a> <a href="/tags/Database/" style="font-size: 14px;">Database</a> <a href="/tags/DesignPattern/" style="font-size: 13px;">DesignPattern</a> <a href="/tags/Frontend/" style="font-size: 13.33px;">Frontend</a> <a href="/tags/InfluxDB/" style="font-size: 13.33px;">InfluxDB</a> <a href="/tags/Javascript/" style="font-size: 13.33px;">Javascript</a> <a href="/tags/Jquery/" style="font-size: 13px;">Jquery</a> <a href="/tags/Login/" style="font-size: 13px;">Login</a> <a href="/tags/MockService/" style="font-size: 13px;">MockService</a> <a href="/tags/MongoDB/" style="font-size: 13.33px;">MongoDB</a> <a href="/tags/Node-js/" style="font-size: 14px;">Node.js</a> <a href="/tags/Redis/" style="font-size: 13px;">Redis</a> <a href="/tags/Socket-io/" style="font-size: 13px;">Socket.io</a> <a href="/tags/SqlServer/" style="font-size: 13px;">SqlServer</a> <a href="/tags/Tutorial/" style="font-size: 13.67px;">Tutorial</a> <a href="/tags/http/" style="font-size: 13px;">http</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/数据库/">数据库</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/01/07/数据库原理/" class="title">数据库原理</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-01-07T14:08:33.000Z" itemprop="datePublished">2019-01-07</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/数据库/">数据库</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/01/06/如何设计关系型数据库/" class="title">如何设计关系型数据库</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-01-06T07:33:07.000Z" itemprop="datePublished">2019-01-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/01/01/Redis-的持久和取舍/" class="title">Redis 的持久和取舍</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-01-01T13:32:37.000Z" itemprop="datePublished">2019-01-01</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/开发/">开发</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/12/02/跨域与安全/" class="title">跨域与安全</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-12-02T14:03:24.000Z" itemprop="datePublished">2018-12-02</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/学习资料/">学习资料</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/12/01/如何构建易于运维的后端应用/" class="title">如何构建易于运维的后端应用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-12-01T06:42:27.000Z" itemprop="datePublished">2018-12-01</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-如何设计关系型数据库" class="article article-type-post" itemscope="" itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      如何设计关系型数据库
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/01/06/如何设计关系型数据库/" class="article-date">
+	  <time datetime="2019-01-06T07:33:07.000Z" itemprop="datePublished">2019-01-06</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/数据库/">数据库</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/Database/">Database</a>, <a class="article-tag-link" href="/tags/MongoDB/">MongoDB</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/01/06/如何设计关系型数据库/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h3 id="RDBMS"><a href="#RDBMS" class="headerlink" title="RDBMS"></a>RDBMS</h3><p>从 0 到 1 设计关系型数据库，总共分为两个部分：</p>
+<ul>
+<li><p>程序实例</p>
+<ul>
+<li>存储管理模块</li>
+<li>缓存模块（需要设计淘汰机制</li>
+<li>SQL 解析</li>
+<li>日志管理（记录所有操作）</li>
+<li>权限划分（授权模块）</li>
+<li>容灾机制（保证数据库高可用）</li>
+<li>索引管理（保证数据查询执行效率）</li>
+<li>锁管理（保证数据 ACID）</li>
+</ul>
+</li>
+<li><p>存储模块</p>
+<ul>
+<li>文件系统（保证数据持久化）   </li>
+</ul>
+</li>
+</ul>
+<h3 id="索引模块"><a href="#索引模块" class="headerlink" title="索引模块"></a>索引模块</h3><p><strong>为什么使用索引</strong></p>
+<ol>
+<li>快速查询数据，避免全表扫描，提升检索效率 </li>
+</ol>
+<p><strong>什么样的信息可以成为索引</strong></p>
+<ol>
+<li>主键和唯一键可以作为索引</li>
+</ol>
+<p><strong>索引的数据结构</strong></p>
+<ol>
+<li>生成索引，建立<strong>二叉查找树</strong>进行二分查找 </li>
+<li>生成索引，建立 <strong>B-Tr    ee</strong> 结构进行查找<ol>
+<li>根结点至少包含两个孩子、终端节点位于同一层、树中每个节点最多含有 m 个孩子（m &gt;+ 2）、除了根节点和叶节点外，其他每个节点至少有 ceil(m/2) 个孩子）通过合并、分裂来保持结构，层数不会变深</li>
+</ol>
+</li>
+<li>生成索引，建立 <strong>B+- Tree</strong> 进行查找<ol>
+<li>非叶子节点关键字和指针个数一样</li>
+<li>非叶子节点的子数指针 P[i]，指向关键字值[K[i], K[i+1]] 的子树</li>
+<li>非叶子节点仅用来索引，数据都保存在叶子节点中</li>
+<li>所有叶子节点均有一个链指针指向下一个叶子节点（方便统计和查询）</li>
+<li>优点<ol>
+<li>磁盘读写代价更低</li>
+<li>查询效率更加稳定 logn</li>
+<li>有利于对数据库的扫描</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>生成索引，建立 Hash 结构进行查找<ol>
+<li>无法避免全表扫描</li>
+<li>只能做 ‘=’ ‘in’ 等操作，无法做范围查询（hash 之后无法保证值的大小）</li>
+<li>无法用于排序操作</li>
+<li>不能利用部分索引键做查询</li>
+<li>hash 值重复率较高的情况下，效率没有 B Tree 效率高（不稳定）</li>
+</ol>
+</li>
+<li>bitMap （位图）<ol>
+<li>只有几种值的时候（男，女），纯 CPU 叠加操作</li>
+<li>缺点，锁的粒度大，不适用高并发的系统，适合统计较多的系统</li>
+</ol>
+</li>
+</ol>
+<p><strong>密集索引和稀疏索引的区别</strong></p>
+<ol>
+<li>密集索引的文件中每个搜索码值都对应一个索引值</li>
+<li>稀疏索引文件只为索引码的某些值建立索引项 </li>
+</ol>
+<p><strong>InnoDB</strong></p>
+<ol>
+<li>若一个索引被定义，则这个索引被定义为密集索引</li>
+<li>若没有索引被定义，该表的第一个唯一非空索引则作为密集索引</li>
+<li>若不满足上述条件，内部会自己生成一个隐藏主键</li>
+</ol>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://sensitivemix.github.io/2019/01/06/如何设计关系型数据库/" title="如何设计关系型数据库" target="_blank" rel="external">https://sensitivemix.github.io/2019/01/06/如何设计关系型数据库/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/SensitiveMix" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/SensitiveMix" target="_blank"><span class="text-dark">jack sun</span><small class="ml-1x">Full Stack Developer</small></a></h3>
+        <div>个人简介。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom="">
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2019/01/07/数据库原理/" title="数据库原理"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2019/01/01/Redis-的持久和取舍/" title="Redis 的持久和取舍"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope="" itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/SensitiveMix" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

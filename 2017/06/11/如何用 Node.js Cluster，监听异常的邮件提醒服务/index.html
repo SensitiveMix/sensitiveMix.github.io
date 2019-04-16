@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000">
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top">
+  
+  
+  <title>如何用 Node.js Cluster，监听异常的邮件提醒服务 | Hexo</title>
+  <meta name="description" content="12345                    __                __           __                                       _ __   ____  ____  ____/ /__        _____/ /_  _______/ /____  _____      ___  ____ ___  ____ _(_) /  /">
+<meta name="keywords" content="Node.js,Cluster">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何用 Node.js Cluster，监听异常的邮件提醒服务">
+<meta property="og:url" content="https://sensitivemix.github.io/2017/06/11/如何用 Node.js Cluster，监听异常的邮件提醒服务/index.html">
+<meta property="og:site_name" content="孙祁的博客">
+<meta property="og:description" content="12345                    __                __           __                                       _ __   ____  ____  ____/ /__        _____/ /_  _______/ /____  _____      ___  ____ ___  ____ _(_) /  /">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://travis-ci.org/sunNode/node-cluster-email.svg?branch=master">
+<meta property="og:updated_time" content="2019-04-14T02:29:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何用 Node.js Cluster，监听异常的邮件提醒服务">
+<meta name="twitter:description" content="12345                    __                __           __                                       _ __   ____  ____  ____/ /__        _____/ /_  _______/ /____  _____      ___  ____ ___  ____ _(_) /  /">
+<meta name="twitter:image" content="https://travis-ci.org/sunNode/node-cluster-email.svg?branch=master">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://sensitivemix.github.io/2017/06/11/如何用 Node.js Cluster，监听异常的邮件提醒服务/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="孙祁的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/SensitiveMix" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">jack sun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Full Stack Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> nanjing, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech="">
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope="" itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/SensitiveMix" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope="" itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/前沿技术/">前沿技术</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习资料/">学习资料</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发工具/">开发工具</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/总结/">总结</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/计算机网络/">计算机网络</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BestPractice/">BestPractice</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Blockchain/">Blockchain</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C-Pointer/">C Pointer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CI/">CI</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cluster/">Cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CodeCoverage/">CodeCoverage</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Database/">Database</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DesignPattern/">DesignPattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Frontend/">Frontend</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/InfluxDB/">InfluxDB</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/">Javascript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jquery/">Jquery</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Login/">Login</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MockService/">MockService</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MongoDB/">MongoDB</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Socket-io/">Socket.io</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SqlServer/">SqlServer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tutorial/">Tutorial</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/BestPractice/" style="font-size: 13px;">BestPractice</a> <a href="/tags/Blockchain/" style="font-size: 13.33px;">Blockchain</a> <a href="/tags/C-Pointer/" style="font-size: 13px;">C Pointer</a> <a href="/tags/CI/" style="font-size: 13px;">CI</a> <a href="/tags/Cluster/" style="font-size: 13px;">Cluster</a> <a href="/tags/CodeCoverage/" style="font-size: 13px;">CodeCoverage</a> <a href="/tags/Database/" style="font-size: 14px;">Database</a> <a href="/tags/DesignPattern/" style="font-size: 13px;">DesignPattern</a> <a href="/tags/Frontend/" style="font-size: 13.33px;">Frontend</a> <a href="/tags/InfluxDB/" style="font-size: 13.33px;">InfluxDB</a> <a href="/tags/Javascript/" style="font-size: 13.33px;">Javascript</a> <a href="/tags/Jquery/" style="font-size: 13px;">Jquery</a> <a href="/tags/Login/" style="font-size: 13px;">Login</a> <a href="/tags/MockService/" style="font-size: 13px;">MockService</a> <a href="/tags/MongoDB/" style="font-size: 13.33px;">MongoDB</a> <a href="/tags/Node-js/" style="font-size: 14px;">Node.js</a> <a href="/tags/Redis/" style="font-size: 13px;">Redis</a> <a href="/tags/Socket-io/" style="font-size: 13px;">Socket.io</a> <a href="/tags/SqlServer/" style="font-size: 13px;">SqlServer</a> <a href="/tags/Tutorial/" style="font-size: 13.67px;">Tutorial</a> <a href="/tags/http/" style="font-size: 13px;">http</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/数据库/">数据库</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/01/07/数据库原理/" class="title">数据库原理</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-01-07T14:08:33.000Z" itemprop="datePublished">2019-01-07</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/数据库/">数据库</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/01/06/如何设计关系型数据库/" class="title">如何设计关系型数据库</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-01-06T07:33:07.000Z" itemprop="datePublished">2019-01-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/01/01/Redis-的持久和取舍/" class="title">Redis 的持久和取舍</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-01-01T13:32:37.000Z" itemprop="datePublished">2019-01-01</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/开发/">开发</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/12/02/跨域与安全/" class="title">跨域与安全</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-12-02T14:03:24.000Z" itemprop="datePublished">2018-12-02</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/学习资料/">学习资料</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/12/01/如何构建易于运维的后端应用/" class="title">如何构建易于运维的后端应用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-12-01T06:42:27.000Z" itemprop="datePublished">2018-12-01</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-如何用 Node.js Cluster，监听异常的邮件提醒服务" class="article article-type-post" itemscope="" itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      如何用 Node.js Cluster，监听异常的邮件提醒服务
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2017/06/11/如何用 Node.js Cluster，监听异常的邮件提醒服务/" class="article-date">
+	  <time datetime="2017-06-11T14:24:57.000Z" itemprop="datePublished">2017-06-11</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/开发/">开发</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/Cluster/">Cluster</a>, <a class="article-tag-link" href="/tags/Node-js/">Node.js</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2017/06/11/如何用 Node.js Cluster，监听异常的邮件提醒服务/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">                    __                __           __                                       _ __</span><br><span class="line">   ____  ____  ____/ /__        _____/ /_  _______/ /____  _____      ___  ____ ___  ____ _(_) /</span><br><span class="line">  / __ \/ __ \/ __  / _ \______/ ___/ / / / / ___/ __/ _ \/ ___/_____/ _ \/ __ `__ \/ __ `/ / /</span><br><span class="line"> / / / / /_/ / /_/ /  __/_____/ /__/ / /_/ (__  ) /_/  __/ /  /_____/  __/ / / / / / /_/ / / /</span><br><span class="line">/_/ /_/\____/\__,_/\___/      \___/_/\__,_/____/\__/\___/_/         \___/_/ /_/ /_/\__,_/_/_/</span><br></pre></td></tr></table></figure>
+<p><a href="https://travis-ci.org/sunNode/node-cluster-email" target="_blank" rel="noopener"><img src="https://travis-ci.org/sunNode/node-cluster-email.svg?branch=master" alt="Build Status"></a></p>
+<p>A module for taking advantage of the built-in cluster module in node v0.8 and above.send email if cluster exception,you will recieve a detail email about worker exception.</p>
+<h2 id="Installation"><a href="#Installation" class="headerlink" title="Installation"></a>Installation</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install https://github.com/sunNode/node-cluster-email</span><br></pre></td></tr></table></figure>
+<h2 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h2><p>Initialize mail plugin with the given email(s), with the given options.</p>
+<p> Options:</p>
+<ul>
+<li><code>from</code> sender email</li>
+<li><code>timeout</code> sendmail timeout in milliseconds</li>
+<li><code>subject</code> defaulting to “cluster({worker}) exception: {message}”</li>
+<li><code>template</code> function called with local variables (usually jade / ejs template etc)</li>
+</ul>
+<h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">const cluster = require(<span class="string">'cluster'</span>)</span><br><span class="line">const cpu = require (<span class="string">'os'</span>).cpus().length</span><br><span class="line">const mail = require(<span class="string">'node-cluster-mail'</span>)</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * [<span class="keyword">if</span> description]</span><br><span class="line"> * @param  &#123;[<span class="built_in">type</span>]&#125; cluster.isMaster [description]</span><br><span class="line"> * @<span class="built_in">return</span> &#123;[<span class="built_in">type</span>]&#125;                  [description]</span><br><span class="line"> */</span><br><span class="line"><span class="keyword">if</span> (cluster.isMaster) &#123;</span><br><span class="line">  // Fork workers.</span><br><span class="line">  <span class="keyword">for</span> (<span class="built_in">let</span> i = 0; i &lt; cpu; i++) &#123;</span><br><span class="line">    cluster.fork();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  cluster.on(<span class="string">'exit'</span>, <span class="keyword">function</span>(worker, code, signal) &#123;</span><br><span class="line">    mail(<span class="string">'phonenix@gmail.com'</span>,&#123;<span class="string">'from'</span>:<span class="string">'phonenix-test@gmail.com'</span>,<span class="string">'cc'</span>:<span class="string">'phonenix-test2@gmail.com'</span>&#125;)</span><br><span class="line">    console.log(<span class="string">'worker '</span> + worker.process.pid + <span class="string">' died'</span>);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  cluster.on(<span class="string">'fork'</span>, <span class="keyword">function</span>(worker) &#123;</span><br><span class="line">  console.log(`workers: <span class="variable">$&#123;worker.id&#125;</span> worker.process.pid :<span class="variable">$&#123;worker.process.pid&#125;</span>`)</span><br><span class="line">&#125;);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  // Workers can share any TCP connection</span><br><span class="line">  // In this service its a restify server</span><br><span class="line">  require(<span class="string">'./app'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a href="https://github.com/sensitiveMix/node-cluster-email" target="_blank" rel="noopener">node-cluster-email</a></p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://sensitivemix.github.io/2017/06/11/如何用 Node.js Cluster，监听异常的邮件提醒服务/" title="如何用 Node.js Cluster，监听异常的邮件提醒服务" target="_blank" rel="external">https://sensitivemix.github.io/2017/06/11/如何用 Node.js Cluster，监听异常的邮件提醒服务/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/SensitiveMix" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/SensitiveMix" target="_blank"><span class="text-dark">jack sun</span><small class="ml-1x">Full Stack Developer</small></a></h3>
+        <div>个人简介。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom="">
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2017/06/11/websocket 聊天室/" title="websocket 聊天室"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2017/06/11/基于 Node.js 构建微服务中的 MockService/" title="基于 Node.js 构建微服务中的 MockService"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope="" itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/SensitiveMix" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

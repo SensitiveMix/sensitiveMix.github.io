@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000">
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top">
+  
+  
+  <title>JavaScript 代码整洁之道中文版 | Hexo</title>
+  <meta name="description" content="#  目录 概述  变量  函数  对象和数据结构  类  测试  并发  错误处理  格式  注释   概述 Robert C. Martin 在 《代码整洁之道》 中提到的软件工程原则，同样适用于 JavaScript。这不是一个风格参考。它指导如何用 JavaScript 编写可读、可复用、可重构的软件。 并不是每一个原则都必须严格遵循，甚至很少得到大家的认同。它们仅用于参考，不过要知道这些">
+<meta name="keywords" content="Tutorial">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript 代码整洁之道中文版">
+<meta property="og:url" content="https://sensitivemix.github.io/2018/12/01/JavaScript-代码整洁之道中文版/index.html">
+<meta property="og:site_name" content="孙祁的博客">
+<meta property="og:description" content="#  目录 概述  变量  函数  对象和数据结构  类  测试  并发  错误处理  格式  注释   概述 Robert C. Martin 在 《代码整洁之道》 中提到的软件工程原则，同样适用于 JavaScript。这不是一个风格参考。它指导如何用 JavaScript 编写可读、可复用、可重构的软件。 并不是每一个原则都必须严格遵循，甚至很少得到大家的认同。它们仅用于参考，不过要知道这些">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://p0.qhimg.com/t01cb6a971284a41620.jpg">
+<meta property="og:updated_time" content="2019-04-14T02:29:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript 代码整洁之道中文版">
+<meta name="twitter:description" content="#  目录 概述  变量  函数  对象和数据结构  类  测试  并发  错误处理  格式  注释   概述 Robert C. Martin 在 《代码整洁之道》 中提到的软件工程原则，同样适用于 JavaScript。这不是一个风格参考。它指导如何用 JavaScript 编写可读、可复用、可重构的软件。 并不是每一个原则都必须严格遵循，甚至很少得到大家的认同。它们仅用于参考，不过要知道这些">
+<meta name="twitter:image" content="http://p0.qhimg.com/t01cb6a971284a41620.jpg">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://sensitivemix.github.io/2018/12/01/JavaScript-代码整洁之道中文版/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="孙祁的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/SensitiveMix" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">jack sun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Full Stack Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> nanjing, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech="">
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope="" itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/SensitiveMix" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope="" itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/前沿技术/">前沿技术</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习资料/">学习资料</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发工具/">开发工具</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/总结/">总结</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/计算机网络/">计算机网络</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BestPractice/">BestPractice</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Blockchain/">Blockchain</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C-Pointer/">C Pointer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CI/">CI</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cluster/">Cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CodeCoverage/">CodeCoverage</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Database/">Database</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DesignPattern/">DesignPattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Frontend/">Frontend</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/InfluxDB/">InfluxDB</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/">Javascript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jquery/">Jquery</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Login/">Login</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MockService/">MockService</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MongoDB/">MongoDB</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Socket-io/">Socket.io</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SqlServer/">SqlServer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tutorial/">Tutorial</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/BestPractice/" style="font-size: 13px;">BestPractice</a> <a href="/tags/Blockchain/" style="font-size: 13.33px;">Blockchain</a> <a href="/tags/C-Pointer/" style="font-size: 13px;">C Pointer</a> <a href="/tags/CI/" style="font-size: 13px;">CI</a> <a href="/tags/Cluster/" style="font-size: 13px;">Cluster</a> <a href="/tags/CodeCoverage/" style="font-size: 13px;">CodeCoverage</a> <a href="/tags/Database/" style="font-size: 14px;">Database</a> <a href="/tags/DesignPattern/" style="font-size: 13px;">DesignPattern</a> <a href="/tags/Frontend/" style="font-size: 13.33px;">Frontend</a> <a href="/tags/InfluxDB/" style="font-size: 13.33px;">InfluxDB</a> <a href="/tags/Javascript/" style="font-size: 13.33px;">Javascript</a> <a href="/tags/Jquery/" style="font-size: 13px;">Jquery</a> <a href="/tags/Login/" style="font-size: 13px;">Login</a> <a href="/tags/MockService/" style="font-size: 13px;">MockService</a> <a href="/tags/MongoDB/" style="font-size: 13.33px;">MongoDB</a> <a href="/tags/Node-js/" style="font-size: 14px;">Node.js</a> <a href="/tags/Redis/" style="font-size: 13px;">Redis</a> <a href="/tags/Socket-io/" style="font-size: 13px;">Socket.io</a> <a href="/tags/SqlServer/" style="font-size: 13px;">SqlServer</a> <a href="/tags/Tutorial/" style="font-size: 13.67px;">Tutorial</a> <a href="/tags/http/" style="font-size: 13px;">http</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/数据库/">数据库</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/01/07/数据库原理/" class="title">数据库原理</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-01-07T14:08:33.000Z" itemprop="datePublished">2019-01-07</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/数据库/">数据库</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/01/06/如何设计关系型数据库/" class="title">如何设计关系型数据库</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-01-06T07:33:07.000Z" itemprop="datePublished">2019-01-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/01/01/Redis-的持久和取舍/" class="title">Redis 的持久和取舍</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-01-01T13:32:37.000Z" itemprop="datePublished">2019-01-01</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/开发/">开发</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/12/02/跨域与安全/" class="title">跨域与安全</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-12-02T14:03:24.000Z" itemprop="datePublished">2018-12-02</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/学习资料/">学习资料</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/12/01/如何构建易于运维的后端应用/" class="title">如何构建易于运维的后端应用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-12-01T06:42:27.000Z" itemprop="datePublished">2018-12-01</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-JavaScript-代码整洁之道中文版" class="article article-type-post" itemscope="" itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      JavaScript 代码整洁之道中文版
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/12/01/JavaScript-代码整洁之道中文版/" class="article-date">
+	  <time datetime="2018-12-01T06:33:40.000Z" itemprop="datePublished">2018-12-01</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/学习资料/">学习资料</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/Tutorial/">Tutorial</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/12/01/JavaScript-代码整洁之道中文版/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p># </p>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li><p><a href="#概述">概述</a></p>
+</li>
+<li><p><a href="#变量">变量</a></p>
+</li>
+<li><p><a href="#函数">函数</a></p>
+</li>
+<li><p><a href="#对象和数据结构">对象和数据结构</a></p>
+</li>
+<li><p><a href="#类">类</a></p>
+</li>
+<li><p><a href="#测试">测试</a></p>
+</li>
+<li><p><a href="#并发">并发</a></p>
+</li>
+<li><p><a href="#错误处理">错误处理</a></p>
+</li>
+<li><p><a href="#格式">格式</a></p>
+</li>
+<li><p><a href="#注释">注释</a></p>
+</li>
+</ol>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p><img src="http://p0.qhimg.com/t01cb6a971284a41620.jpg" alt="一张幽默的图片：软件质量通过你在阅读代码的时候有多少报怨来进行评估"></p>
+<p>Robert C. Martin 在 <a href="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882" target="_blank" rel="noopener">《代码整洁之道》</a> 中提到的软件工程原则，同样适用于 JavaScript。这不是一个风格参考。它指导如何用 JavaScript 编写可读、可复用、可重构的软件。</p>
+<p>并不是每一个原则都必须严格遵循，甚至很少得到大家的认同。它们仅用于参考，不过要知道这些原则都是《代码整洁之道》的作者们累积多年的集体经验。</p>
+<p>我们在软件工程方面的技术发展刚刚超过 50 年，我们仍然在学习很多东西。当软件架构和架构本身一样古老的时候，我们应该遵循更为严格规则。现在，对于你和你的团队编写的 JavaScript 代码，不妨依据这些准则来进行质量评估。</p>
+<p>还有一件事：知道这些不会马上让你成为更好的软件开发者，在工作中常年使用这些准则不能让你避免错误。每一段代码都从最初的草图开始到最终成型，就像为湿粘土塑形一样。最后，当我们与同行一起审查的时候，再把不完美的地方消除掉。不要因为初稿需要改善而否定自己，需要要否定的只是那些代码！</p>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><h3 id="使用有准确意义的变量名"><a href="#使用有准确意义的变量名" class="headerlink" title="使用有准确意义的变量名"></a>使用有准确意义的变量名</h3><p>不好:</p>
+<p>var yyyymmdstr = moment().format(‘YYYY/MM/DD’);</p>
+<p>好:</p>
+<p>var yearMonthDay = moment().format(‘YYYY/MM/DD’);</p>
+<h3 id="在变量的值不会改变时使用-ES6-的常量"><a href="#在变量的值不会改变时使用-ES6-的常量" class="headerlink" title="在变量的值不会改变时使用 ES6 的常量"></a>在变量的值不会改变时使用 ES6 的常量</h3><p>在不好的示例中，变量可以被改变。如果你申明一个常量，它会在整个程序中始终保持不变。</p>
+<p>不好:</p>
+<p>var FIRST_US_PRESIDENT = “George Washington”;</p>
+<p>好:</p>
+<p>const FIRST_US_PRESIDENT = “George Washington”;</p>
+<h3 id="对同一类型的变量使用相同的词汇"><a href="#对同一类型的变量使用相同的词汇" class="headerlink" title="对同一类型的变量使用相同的词汇"></a>对同一类型的变量使用相同的词汇</h3><p>不好:</p>
+<p>getUserInfo();<br>getClientData();<br>getCustomerRecord();</p>
+<p>好:</p>
+<p>getUser();</p>
+<h3 id="使用可检索的名称"><a href="#使用可检索的名称" class="headerlink" title="使用可检索的名称"></a>使用可检索的名称</h3><p>我们阅读的代码永远比写的折。写可读性强、易于检索的的代码非常重要。在程序中使用无明确意义的变量名会难以理解，对读者造成伤害。所以，把名称定义成可检索的。</p>
+<p>不好:</p>
+<p>// 见鬼，525600 是个啥？<br>for (var i = 0; i &lt; 525600; i++) {<br>  runCronJob();<br>}</p>
+<p>好:</p>
+<p>// 用 `var` 申明为大写的全局变量<br>var MINUTES_IN_A_YEAR = 525600;<br>for (var i = 0; i &lt; MINUTES_IN_A_YEAR; i++) {<br>  runCronJob();<br>}</p>
+<h3 id="使用解释性的变量"><a href="#使用解释性的变量" class="headerlink" title="使用解释性的变量"></a>使用解释性的变量</h3><p>不好:</p>
+<p>const cityStateRegex = /^(.+)[,\\s]+(.+?)\s*(\d{5})?$/;<br>saveCityState(cityStateRegex.match(cityStateRegex)[1], cityStateRegex.match(cityStateRegex)[2]);</p>
+<p>好:</p>
+<p>const cityStateRegex = /^(.+)[,\\s]+(.+?)\s*(\d{5})?$/;<br>const match = cityStateRegex.match(cityStateRegex)<br>const city = match[1];<br>const state = match[2];<br>saveCityState(city, state);</p>
+<h3 id="避免暗示"><a href="#避免暗示" class="headerlink" title="避免暗示"></a>避免暗示</h3><p>显式优于隐式。</p>
+<p>不好:</p>
+<p>var locations = [‘Austin’, ‘New York’, ‘San Francisco’];<br>locations.forEach((l) =&gt; {<br>  doStuff();<br>  doSomeOtherStuff();<br>  …<br>  …<br>  …<br>  // 等等，`l` 又是什么？<br>  dispatch(l);<br>});</p>
+<p>好:</p>
+<p>var locations = [‘Austin’, ‘New York’, ‘San Francisco’];<br>locations.forEach((location) =&gt; {<br>  doStuff();<br>  doSomeOtherStuff();<br>  …<br>  …<br>  …<br>  dispatch(location);<br>});</p>
+<h3 id="不要添加没必要的上下文"><a href="#不要添加没必要的上下文" class="headerlink" title="不要添加没必要的上下文"></a>不要添加没必要的上下文</h3><p>如果你的类名称/对象名称已经说明了它们是什么，不要在(属性)变量名里重复。</p>
+<p>不好:</p>
+<p>var Car = {<br>  carMake: ‘Honda’,<br>  carModel: ‘Accord’,<br>  carColor: ‘Blue’<br>};</p>
+<p>function paintCar(car) {<br>  car.carColor = ‘Red’;<br>}</p>
+<p>好:</p>
+<p>var Car = {<br>  make: ‘Honda’,<br>  model: ‘Accord’,<br>  color: ‘Blue’<br>};</p>
+<p>function paintCar(car) {<br>  car.color = ‘Red’;<br>}</p>
+<h3 id="短路语法比条件语句更清晰"><a href="#短路语法比条件语句更清晰" class="headerlink" title="短路语法比条件语句更清晰"></a>短路语法比条件语句更清晰</h3><p>不好:</p>
+<p>function createMicrobrewery(name) {<br>  var breweryName;<br>  if (name) {<br>    breweryName = name;<br>  } else {<br>    breweryName = ‘Hipster Brew Co.’;<br>  }<br>}</p>
+<p>好:</p>
+<p>function createMicrobrewery(name) {<br>  var breweryName = name || ‘Hipster Brew Co.’<br>}</p>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><h3 id="函数参数-理论上少于等于2个"><a href="#函数参数-理论上少于等于2个" class="headerlink" title="函数参数 (理论上少于等于2个)"></a>函数参数 (理论上少于等于2个)</h3><p>限制函数参数的数量极为重要，它会让你更容易测试函数。超过3个参数会导致组合膨胀，以致于你必须根据不同的参数对大量不同的情况进行测试。</p>
+<p>理想情况下是没有参数。有一个或者两个参数也还好，三个就应该避免了。多于那个数量就应该考虑合并。通常情况下，如果你有多于2个参数，你的函数会尝试做太多事情。如果不是这样，大多数时候可以使用一个高阶对象作为参数使用。</p>
+<p>既然 JavaScript 允许我们在运行时随意创建对象，而不需要预先定义样板，那么你在需要很多参数的时候就可以使用一个对象来处理。</p>
+<p>不好:</p>
+<p>function createMenu(title, body, buttonText, cancellable) {<br>  …<br>}</p>
+<p>好:</p>
+<p>var menuConfig = {<br>  title: ‘Foo’,<br>  body: ‘Bar’,<br>  buttonText: ‘Baz’,<br>  cancellable: true<br>}</p>
+<p>function createMenu(menuConfig) {<br>  …<br>}</p>
+<h3 id="一个函数只做一件事"><a href="#一个函数只做一件事" class="headerlink" title="一个函数只做一件事"></a>一个函数只做一件事</h3><p>目前这是软件工程中最重要的原则。如果函数做了较多的事情，它就难以组合、测试和推测。当你让函数只做一件事情的时候，它们就很容易重构，而且代码读起来也会清晰得多。你只需要遵循本指南的这一条，就能领先于其他很多开发者。</p>
+<p>不好:</p>
+<p>function emailClients(clients) {<br>  clients.forEach(client =&gt; {<br>    let clientRecord = database.lookup(client);<br>    if (clientRecord.isActive()) {<br>      email(client);<br>    }<br>  });<br>}</p>
+<p>好:</p>
+<p>function emailClients(clients) {<br>  clients.forEach(client =&gt; {<br>    emailClientIfNeeded(client);<br>  });<br>}</p>
+<p>function emailClientIfNeeded(client) {<br>  if (isClientActive(client)) {<br>    email(client);<br>  }<br>}</p>
+<p>function isClientActive(client) {<br>  let clientRecord = database.lookup(client);<br>  return clientRecord.isActive();<br>}</p>
+<h3 id="函数名称要说明它做的事"><a href="#函数名称要说明它做的事" class="headerlink" title="函数名称要说明它做的事"></a>函数名称要说明它做的事</h3><p>不好:</p>
+<p>function dateAdd(date, month) {<br>  // …<br>}</p>
+<p>let date = new Date();</p>
+<p>// 很难从函数名了解到加了什么<br>dateAdd(date, 1);</p>
+<p>好:</p>
+<p>function dateAddMonth(date, month) {<br>  // …<br>}</p>
+<p>let date = new Date();<br>dateAddMonth(date, 1);</p>
+<h3 id="函数应该只抽象一个层次"><a href="#函数应该只抽象一个层次" class="headerlink" title="函数应该只抽象一个层次"></a>函数应该只抽象一个层次</h3><p>如果你有多个层次的抽象，那么你的函数通常做了太多事情，此时应该拆分函数使其易于复用和易于测试。</p>
+<p>不好:</p>
+<p>function parseBetterJSAlternative(code) {<br>  let REGEXES = [<br>    // …<br>  ];</p>
+<p>  let statements = code.split(‘ ‘);<br>  let tokens;<br>  REGEXES.forEach((REGEX) =&gt; {<br>    statements.forEach((statement) =&gt; {<br>      // …<br>    })<br>  });</p>
+<p>  let ast;<br>  tokens.forEach((token) =&gt; {<br>    // lex…<br>  });</p>
+<p>  ast.forEach((node) =&gt; {<br>    // parse…<br>  })<br>}</p>
+<p>好:</p>
+<p>function tokenize(code) {<br>  let REGEXES = [<br>    // …<br>  ];</p>
+<p>  let statements = code.split(‘ ‘);<br>  let tokens;<br>  REGEXES.forEach((REGEX) =&gt; {<br>    statements.forEach((statement) =&gt; {<br>      // …<br>    })<br>  });</p>
+<p>  return tokens;<br>}</p>
+<p>function lexer(tokens) {<br>  let ast;<br>  tokens.forEach((token) =&gt; {<br>    // lex…<br>  });</p>
+<p>  return ast;<br>}</p>
+<p>function parseBetterJSAlternative(code) {<br>  let tokens = tokenize(code);<br>  let ast = lexer(tokens);<br>  ast.forEach((node) =&gt; {<br>    // parse…<br>  })<br>}</p>
+<h3 id="删除重复代码"><a href="#删除重复代码" class="headerlink" title="删除重复代码"></a>删除重复代码</h3><p>任何情况下，都不要有重复的代码。没有任何原因，它很可能是阻碍你成为专业开发者的最糟糕的一件事。重复代码意味着你要修改某些逻辑的时候要修改不止一个地方的代码。JavaScript 是弱类型语句，所以它很容易写通用性强的函数。记得利用这一点！</p>
+<p>不好:</p>
+<p>function showDeveloperList(developers) {<br>  developers.forEach(developers =&gt; {<br>    var expectedSalary = developer.calculateExpectedSalary();<br>    var experience = developer.getExperience();<br>    var githubLink = developer.getGithubLink();<br>    var data = {<br>      expectedSalary: expectedSalary,<br>      experience: experience,<br>      githubLink: githubLink<br>    };</p>
+<pre><code>render(data);
+</code></pre><p>  });<br>}</p>
+<p>function showManagerList(managers) {<br>  managers.forEach(manager =&gt; {<br>    var expectedSalary = manager.calculateExpectedSalary();<br>    var experience = manager.getExperience();<br>    var portfolio = manager.getMBAProjects();<br>    var data = {<br>      expectedSalary: expectedSalary,<br>      experience: experience,<br>      portfolio: portfolio<br>    };</p>
+<pre><code>render(data);
+</code></pre><p>  });<br>}</p>
+<p>好:</p>
+<p>function showList(employees) {<br>  employees.forEach(employee =&gt; {<br>    var expectedSalary = employee.calculateExpectedSalary();<br>    var experience = employee.getExperience();<br>    var portfolio;</p>
+<pre><code>if (employee.type === &apos;manager&apos;) {
+  portfolio = employee.getMBAProjects();
+} else {
+  portfolio = employee.getGithubLink();
+}
+
+var data = {
+  expectedSalary: expectedSalary,
+  experience: experience,
+  portfolio: portfolio
+};
+
+render(data);
+</code></pre><p>  });<br>}</p>
+<h3 id="使用默认参数代替短路表达式"><a href="#使用默认参数代替短路表达式" class="headerlink" title="使用默认参数代替短路表达式"></a>使用默认参数代替短路表达式</h3><p>不好:</p>
+<p>function writeForumComment(subject, body) {<br>  subject = subject || ‘No Subject’;<br>  body = body || ‘No text’;<br>}</p>
+<p>好:</p>
+<p>function writeForumComment(subject = ‘No subject’, body = ‘No text’) {<br>  …<br>}</p>
+<h3 id="用-Object-assign-设置默认对象"><a href="#用-Object-assign-设置默认对象" class="headerlink" title="用 Object.assign 设置默认对象"></a>用 Object.assign 设置默认对象</h3><p>不好:</p>
+<p>var menuConfig = {<br>  title: null,<br>  body: ‘Bar’,<br>  buttonText: null,<br>  cancellable: true<br>}</p>
+<p>function createMenu(config) {<br>  config.title = config.title || ‘Foo’<br>  config.body = config.body || ‘Bar’<br>  config.buttonText = config.buttonText || ‘Baz’<br>  config.cancellable = config.cancellable === undefined ? config.cancellable : true;</p>
+<p>}</p>
+<p>createMenu(menuConfig);</p>
+<p>好:</p>
+<p>var menuConfig = {<br>  title: ‘Order’,<br>  // User did not include ‘body’ key<br>  buttonText: ‘Send’,<br>  cancellable: true<br>}</p>
+<p>function createMenu(config) {<br>  config = Object.assign({<br>    title: ‘Foo’,<br>    body: ‘Bar’,<br>    buttonText: ‘Baz’,<br>    cancellable: true<br>  }, config);</p>
+<p>  // 现在 config 等于: {title: “Foo”, body: “Bar”, buttonText: “Baz”, cancellable: true}<br>  // …<br>}</p>
+<p>createMenu(menuConfig);</p>
+<h3 id="不要把标记用作函数参数"><a href="#不要把标记用作函数参数" class="headerlink" title="不要把标记用作函数参数"></a>不要把标记用作函数参数</h3><p>标记告诉你的用户这个函数做的事情不止一件。但是函数应该只做一件事。如果你的函数中会根据某个布尔参数产生不同的分支，那就拆分这个函数。</p>
+<p>不好:</p>
+<p>function createFile(name, temp) {<br>  if (temp) {<br>    fs.create(‘./temp/‘ + name);<br>  } else {<br>    fs.create(name);<br>  }<br>}</p>
+<p>好:</p>
+<p>function createTempFile(name) {<br>  fs.create(‘./temp/‘ + name);<br>}</p>
+<p>function createFile(name) {<br>  fs.create(name);<br>}</p>
+<h3 id="避免副作用"><a href="#避免副作用" class="headerlink" title="避免副作用"></a>避免副作用</h3><p>如果一个函数不是获取一个输入的值并返回其它值，它就有可能产生副作用。这些副作用可能是写入文件、修改一些全局变量，或者意外地把你所有钱转给一个陌生人。</p>
+<p>现在你确实需要在程序中有副作用。像前面提到的那样，你可能需要写入文件。现在你需要做的事情是搞清楚在哪里集中完成这件事情。不要使用几个函数或类来完成写入某个特定文件的工作。采用一个，就一个服务来完成。</p>
+<p>关键点是避免觉的陷阱，比如在没有结构的对象间共享状态，使用可以被任意修改的易变的数据类型，没有集中处理发生的副作用等。如果你能做到，你就能比其他大多数程序员更愉快。</p>
+<p>不好:</p>
+<p>// 下面的函数使用了全局变量。<br>// 如果有另一个函数在使用 name，现在可能会因为 name 变成了数组而不能正常运行。<br>var name = ‘Ryan McDermott’;</p>
+<p>function splitIntoFirstAndLastName() {<br>  name = name.split(‘ ‘);<br>}</p>
+<p>splitIntoFirstAndLastName();</p>
+<p>console.log(name); // [‘Ryan’, ‘McDermott’];</p>
+<p>好:</p>
+<p>function splitIntoFirstAndLastName(name) {<br>  return name.split(‘ ‘);<br>}</p>
+<p>var name = ‘Ryan McDermott’<br>var newName = splitIntoFirstAndLastName(name);</p>
+<p>console.log(name); // ‘Ryan McDermott’;<br>console.log(newName); // [‘Ryan’, ‘McDermott’];</p>
+<h3 id="不要写入全局函数"><a href="#不要写入全局函数" class="headerlink" title="不要写入全局函数"></a>不要写入全局函数</h3><p>JavaScript 中全局污染是一件糟糕的事情，因为它可能和另外库发生冲突，然而使用你 API 的用户却不会知道——直到他们在生产中遇到一个异常。来思考一个例子：你想扩展 JavaScript 的原生 Array，使之拥有一个 <code>diff</code> 方法，用来展示两数据之前的区别，这时你会怎么做？你可以给 <code>Array.prototype</code> 添加一个新的函数，但它可能会与其它想做同样事情的库发生冲突。如果那个库实现的 <code>diff</code> 只是比如数组中第一个元素和最后一个元素的异同会发生什么事情呢？这就是为什么最好是使用 ES6 的类语法从全局的 <code>Array</code> 派生一个类来做这件事。</p>
+<p>不好:</p>
+<p>Array.prototype.diff = function(comparisonArray) {<br>  var values = [];<br>  var hash = {};</p>
+<p>  for (var i of comparisonArray) {<br>    hash[i] = true;<br>  }</p>
+<p>  for (var i of this) {<br>    if (!hash[i]) {<br>      values.push(i);<br>    }<br>  }</p>
+<p>  return values;<br>}</p>
+<p>好:</p>
+<p>class SuperArray extends Array {<br>  constructor(…args) {<br>    super(…args);<br>  }</p>
+<p>  diff(comparisonArray) {<br>    var values = [];<br>    var hash = {};</p>
+<pre><code>for (var i of comparisonArray) {
+  hash\[i\] = true;
+}
+
+for (var i of this) {
+  if (!hash\[i\]) {
+    values.push(i);
+  }
+}
+
+return values;
+</code></pre><p>  }<br>}</p>
+<h3 id="喜欢上命令式编程之上的函数式编程"><a href="#喜欢上命令式编程之上的函数式编程" class="headerlink" title="喜欢上命令式编程之上的函数式编程"></a>喜欢上命令式编程之上的函数式编程</h3><p>如果 Haskell 是 IPA 那么 JavaScript 就是 O’Douls。就是说，与 Haskell 不同，JavaScript 不是函数式编程语言，不过它仍然有一点函数式的意味。函数式语言更整洁也更容易测试，所以你最好能喜欢上这种编程风格。</p>
+<p>不好:</p>
+<p>const programmerOutput = [<br>  {<br>    name: ‘Uncle Bobby’,<br>    linesOfCode: 500<br>  }, {<br>    name: ‘Suzie Q’,<br>    linesOfCode: 1500<br>  }, {<br>    name: ‘Jimmy Gosling’,<br>    linesOfCode: 150<br>  }, {<br>    name: ‘Gracie Hopper’,<br>    linesOfCode: 1000<br>  }<br>];</p>
+<p>var totalOutput = 0;</p>
+<p>for (var i = 0; i &lt; programmerOutput.length; i++) {<br>  totalOutput += programmerOutput[i].linesOfCode;<br>}</p>
+<p>好:</p>
+<p>const programmerOutput = [<br>  {<br>    name: ‘Uncle Bobby’,<br>    linesOfCode: 500<br>  }, {<br>    name: ‘Suzie Q’,<br>    linesOfCode: 1500<br>  }, {<br>    name: ‘Jimmy Gosling’,<br>    linesOfCode: 150<br>  }, {<br>    name: ‘Gracie Hopper’,<br>    linesOfCode: 1000<br>  }<br>];</p>
+<p>var totalOutput = programmerOutput<br>  .map((programmer) =&gt; programmer.linesOfCode)<br>  .reduce((acc, linesOfCode) =&gt; acc + linesOfCode, 0);</p>
+<h3 id="封装条件"><a href="#封装条件" class="headerlink" title="封装条件"></a>封装条件</h3><p>不好:</p>
+<p>if (fsm.state === ‘fetching’ &amp;&amp; isEmpty(listNode)) {<br>  /// …<br>}</p>
+<p>好:</p>
+<p>function shouldShowSpinner(fsm, listNode) {<br>  return fsm.state === ‘fetching’ &amp;&amp; isEmpty(listNode);<br>}</p>
+<p>if (shouldShowSpinner(fsmInstance, listNodeInstance)) {<br>  // …<br>}</p>
+<h3 id="避免否定条件"><a href="#避免否定条件" class="headerlink" title="避免否定条件"></a>避免否定条件</h3><p>不好:</p>
+<p>function isDOMNodeNotPresent(node) {<br>  // …<br>}</p>
+<p>if (!isDOMNodeNotPresent(node)) {<br>  // …<br>}</p>
+<p>好:</p>
+<p>function isDOMNodePresent(node) {<br>  // …<br>}</p>
+<p>if (isDOMNodePresent(node)) {<br>  // …<br>}</p>
+<h3 id="避免条件"><a href="#避免条件" class="headerlink" title="避免条件"></a>避免条件</h3><p>这似乎是个不可能完成的任务。大多数人第一次听到这个的时候会说，“没有 <code>if</code> 语句我该怎么办？”回答是在多数情况下都可以使用多态来实现相同的任务。第二个问题通常是，“那太好了，不过我为什么要这么做呢？”答案在于我们之前了解过整洁的概念：一个函数应该只做一件事情。如果你的类和函数有 <code>if</code> 语句，就意味着你的函数做了更多的事。记住，只做一件事。</p>
+<p>不好:</p>
+<p>class Airplane {<br>  //…<br>  getCruisingAltitude() {<br>    switch (this.type) {<br>      case ‘777’:<br>        return getMaxAltitude() - getPassengerCount();<br>      case ‘Air Force One’:<br>        return getMaxAltitude();<br>      case ‘Cessna’:<br>        return getMaxAltitude() - getFuelExpenditure();<br>    }<br>  }<br>}</p>
+<p>好:</p>
+<p>class Airplane {<br>  //…<br>}</p>
+<p>class Boeing777 extends Airplane {<br>  //…<br>  getCruisingAltitude() {<br>    return getMaxAltitude() - getPassengerCount();<br>  }<br>}</p>
+<p>class AirForceOne extends Airplane {<br>  //…<br>  getCruisingAltitude() {<br>    return getMaxAltitude();<br>  }<br>}</p>
+<p>class Cessna extends Airplane {<br>  //…<br>  getCruisingAltitude() {<br>    return getMaxAltitude() - getFuelExpenditure();<br>  }<br>}</p>
+<h3 id="避免类型检查-第1部分"><a href="#避免类型检查-第1部分" class="headerlink" title="避免类型检查(第1部分)"></a>避免类型检查(第1部分)</h3><p>JavaScript 是无类型的，也就是说函数可以获取任意类型的参数。有时候你会觉得这种自由是种折磨，因而会不由自主地在函数中使用类型检查。有很多种方法可以避免类型检查。首先要考虑的就是 API 的一致性。</p>
+<p>不好:</p>
+<p>function travelToTexas(vehicle) {<br>  if (vehicle instanceof Bicycle) {<br>    vehicle.peddle(this.currentLocation, new Location(‘texas’));<br>  } else if (vehicle instanceof Car) {<br>    vehicle.drive(this.currentLocation, new Location(‘texas’));<br>  }<br>}</p>
+<p>好:</p>
+<p>function travelToTexas(vehicle) {<br>  vehicle.move(this.currentLocation, new Location(‘texas’));<br>}</p>
+<h3 id="避免类型检查-第2部分"><a href="#避免类型检查-第2部分" class="headerlink" title="避免类型检查(第2部分)"></a>避免类型检查(第2部分)</h3><p>如果你在处理基本类型的数据，比如字符串，整数和数组，又不能使用多态，这时你会觉得需要使用类型检查，那么可以考虑 TypeScript。这是普通 JavaScript 的完美替代品，它在标准的 JavaScript 语法之上提供了静态类型。普通 JavaScript 手工检查类型的问题在于这样会写很多废话，而人为的“类型安全”并不能弥补损失的可读性。让你的 JavaScript 保持整洁，写很好的测试，并保持良好的代码审查。否则让 TypeScript (我说过，这是很好的替代品)来做所有事情。</p>
+<p>不好:</p>
+<p>function combine(val1, val2) {<br>  if (typeof val1 == “number” &amp;&amp; typeof val2 == “number” ||<br>      typeof val1 == “string” &amp;&amp; typeof val2 == “string”) {<br>    return val1 + val2;<br>  } else {<br>    throw new Error(‘Must be of type String or Number’);<br>  }<br>}</p>
+<p>好:</p>
+<p>function combine(val1, val2) {<br>  return val1 + val2;<br>}</p>
+<h3 id="不要过度优化"><a href="#不要过度优化" class="headerlink" title="不要过度优化"></a>不要过度优化</h3><p>现在浏览器在运行时悄悄地做了很多优化工作。很多时候你的优化都是在浪费时间。<a href="https://github.com/petkaantonov/bluebird/wiki/Optimization-killers" target="_blank" rel="noopener">这里有很好的资源</a> 可以看看哪些优化比较缺乏。把它们作为目标，直到他们能固定下来的时候。</p>
+<p>不好:</p>
+<p>// 在旧浏览器中，每次循环的成本都比较高，因为每次都会重算 `len`。<br>// 现在浏览器中，这已经被优化了。<br>for (var i = 0, len = list.length; i &lt; len; i++) {<br>  // …<br>}</p>
+<p>好:</p>
+<p>for (var i = 0; i &lt; list.length; i++) {<br>  // …<br>}</p>
+<h3 id="删除不用的代码"><a href="#删除不用的代码" class="headerlink" title="删除不用的代码"></a>删除不用的代码</h3><p>不用的代码和重复的代码一样糟糕。在代码库中保留无用的代码是毫无道理的事情。如果某段代码用不到，那就删掉它！如果你以后需要它，仍然可以从代码库的历史版本中找出来。</p>
+<p>不好:</p>
+<p>function oldRequestModule(url) {<br>  // …<br>}</p>
+<p>function newRequestModule(url) {<br>  // …<br>}</p>
+<p>var req = newRequestModule;<br>inventoryTracker(‘apples’, req, ‘<a href="http://www.inventory-awesome.io&#39;)" target="_blank" rel="noopener">www.inventory-awesome.io&#39;)</a>;</p>
+<p>好:</p>
+<p>function newRequestModule(url) {<br>  // …<br>}</p>
+<p>var req = newRequestModule;<br>inventoryTracker(‘apples’, req, ‘<a href="http://www.inventory-awesome.io&#39;)" target="_blank" rel="noopener">www.inventory-awesome.io&#39;)</a>;</p>
+<h2 id="对象和数据结构"><a href="#对象和数据结构" class="headerlink" title="对象和数据结构"></a>对象和数据结构</h2><h3 id="使用-getter-和-setter"><a href="#使用-getter-和-setter" class="headerlink" title="使用 getter 和 setter"></a>使用 getter 和 setter</h3><p>JavaScript 没有接口或者类型，也没有像 <code>public</code> 和 <code>private</code> 这样的关键字，所以很难应用设计模式。实事上，在对象上使用 getter 和 setter 访问数据远好于直接查找对象属性。“为什么？”你可能会这样问。那好，下面列出了原因：</p>
+<ol>
+<li><p>你想在获取对象属性的时候做更多的事，不必在代码中寻找所有访问的代码来逐个修改。</p>
+</li>
+<li><p>在进行 <code>set</code> 的时候可以进行额外的数据检验。</p>
+</li>
+<li><p>封装内部表现。</p>
+</li>
+<li><p>在获取或设置的时候易于添加日志和错误处理。</p>
+</li>
+<li><p>继承当前类，可以重写默认功能。</p>
+</li>
+<li><p>可以对对象属性进行懒加载，比如说从服务器获取属性的数据。</p>
+</li>
+</ol>
+<p>不好:</p>
+<p>class BankAccount {<br>  constructor() {<br>       this.balance = 1000;<br>  }<br>}</p>
+<p>let bankAccount = new BankAccount();</p>
+<p>// 买鞋…<br>bankAccount.balance = bankAccount.balance - 100;</p>
+<p>好:</p>
+<p>class BankAccount {<br>  constructor() {<br>       this.balance = 1000;<br>  }</p>
+<p>  // It doesn’t have to be prefixed with `get` or `set` to be a getter/setter<br>  withdraw(amount) {<br>    if (verifyAmountCanBeDeducted(amount)) {<br>      this.balance -= amount;<br>    }<br>  }<br>}</p>
+<p>let bankAccount = new BankAccount();</p>
+<p>// 买鞋…<br>bankAccount.withdraw(100);</p>
+<h3 id="让对象拥有私有成员"><a href="#让对象拥有私有成员" class="headerlink" title="让对象拥有私有成员"></a>让对象拥有私有成员</h3><p>这可以通过闭包实现(ES5以之前的版本)。</p>
+<p>不好:</p>
+<p>var Employee = function(name) {<br>  this.name = name;<br>}</p>
+<p>Employee.prototype.getName = function() {<br>  return this.name;<br>}</p>
+<p>var employee = new Employee(‘John Doe’);<br>console.log(‘Employee name: ‘ + employee.getName()); // Employee name: John Doe<br>delete employee.name;<br>console.log(‘Employee name: ‘ + employee.getName()); // Employee name: undefined</p>
+<p>好:</p>
+<p>var Employee = (function() {<br>  function Employee(name) {<br>    this.getName = function() {<br>      return name;<br>    };<br>  }</p>
+<p>  return Employee;<br>}());</p>
+<p>var employee = new Employee(‘John Doe’);<br>console.log(‘Employee name: ‘ + employee.getName()); // Employee name: John Doe<br>delete employee.name;<br>console.log(‘Employee name: ‘ + employee.getName()); // Employee name: John Doe</p>
+<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><h3 id="单一职责原则-SRP"><a href="#单一职责原则-SRP" class="headerlink" title="单一职责原则 (SRP)"></a>单一职责原则 (SRP)</h3><p>正如《代码整洁之道》所说，“不应该有超过一个原因来改变类”。往一个类里塞进许多功能是件诱人的事情，就像在坐飞机的时候只带一个手提箱一样。这带来的问题是，你的类不会在概念上有凝聚力，会有很多因素造成对它的改变。让你的类需要改变的次数最少是件非常重要的事情。这是因为如果一个类里塞入了太多功能，你只修改它的一部分，可能会让人难以理解它为何会影响代码库中其它相关模块。</p>
+<p>不好:</p>
+<p>class UserSettings {<br>  constructor(user) {<br>    this.user = user;<br>  }</p>
+<p>  changeSettings(settings) {<br>    if (this.verifyCredentials(user)) {<br>      // …<br>    }<br>  }</p>
+<p>  verifyCredentials(user) {<br>    // …<br>  }<br>}</p>
+<p>好:</p>
+<p>class UserAuth {<br>  constructor(user) {<br>    this.user = user;<br>  }</p>
+<p>  verifyCredentials() {<br>    // …<br>  }<br>}</p>
+<p>class UserSettings {<br>  constructor(user) {<br>    this.user = user;<br>    this.auth = new UserAuth(user)<br>  }</p>
+<p>  changeSettings(settings) {<br>    if (this.auth.verifyCredentials()) {<br>      // …<br>    }<br>  }<br>}</p>
+<h3 id="开放封装原则-OCP"><a href="#开放封装原则-OCP" class="headerlink" title="开放封装原则(OCP)"></a>开放封装原则(OCP)</h3><p>正如 Bertrand Meyer 所说，“软件实体(类、模块、函数等)应该对扩展开放，对修改封闭。”这是什么意思呢？这个原则基本上规定了你应该允许用户扩展你的模块，但不需要打开 <code>.js</code> 源代码文件来进行编辑。</p>
+<p>不好:</p>
+<p>class AjaxRequester {<br>  constructor() {<br>    // 如果我们需要另一个 HTTP 方法，比如 DELETE，该怎么办？<br>    // 我们必须打开这个文件然后手工把它加进去<br>    this.HTTP_METHODS = [‘POST’, ‘PUT’, ‘GET’];<br>  }</p>
+<p>  get(url) {<br>    // …<br>  }</p>
+<p>}</p>
+<p>好:</p>
+<p>class AjaxRequester {<br>  constructor() {<br>    this.HTTP_METHODS = [‘POST’, ‘PUT’, ‘GET’];<br>  }</p>
+<p>  get(url) {<br>    // …<br>  }</p>
+<p>  addHTTPMethod(method) {<br>    this.HTTP_METHODS.push(method);<br>  }<br>}</p>
+<h3 id="里氏替换原则-LSP"><a href="#里氏替换原则-LSP" class="headerlink" title="里氏替换原则(LSP)"></a>里氏替换原则(LSP)</h3><p>这是一个吓人的术语，但描述的却是个简单的概念。它的正式定义为“如果 S 是 T 的子类，那所有 T 类型的对象都可以替换为 S 类型的对象(即 S 类型的对象可以替代 T 类型的对象)，这个替换不会改变程序的任何性质(正确性、任务执行等)。”这确实是个吓人的定义。</p>
+<p>对此最好的解释是，如果你有父类和子类，那么父类和子类可以交替使用而不会造成不正确的结果。这可能仍然让人感到疑惑，那么让我们看看经典的正方形和矩形的例子。在数学上，正方形也是矩形，但是如果你在模型中通过继承使用 “is-a” 关系，你很快就会陷入困境。</p>
+<p>不好:</p>
+<p>class Rectangle {<br>  constructor() {<br>    this.width = 0;<br>    this.height = 0;<br>  }</p>
+<p>  setColor(color) {<br>    // …<br>  }</p>
+<p>  render(area) {<br>    // …<br>  }</p>
+<p>  setWidth(width) {<br>    this.width = width;<br>  }</p>
+<p>  setHeight(height) {<br>    this.height = height;<br>  }</p>
+<p>  getArea() {<br>    return this.width * this.height;<br>  }<br>}</p>
+<p>class Square extends Rectangle {<br>  constructor() {<br>    super();<br>  }</p>
+<p>  setWidth(width) {<br>    this.width = width;<br>    this.height = width;<br>  }</p>
+<p>  setHeight(height) {<br>    this.width = height;<br>    this.height = height;<br>  }<br>}</p>
+<p>function renderLargeRectangles(rectangles) {<br>  rectangles.forEach((rectangle) =&gt; {<br>    rectangle.setWidth(4);<br>    rectangle.setHeight(5);<br>    let area = rectangle.getArea(); // 不好：这里对正方形会返回 25，但应该是 20.<br>    rectangle.render(area);<br>  })<br>}</p>
+<p>let rectangles = [new Rectangle(), new Rectangle(), new Square()];<br>renderLargeRectangles(rectangles);</p>
+<p>好:</p>
+<p>class Shape {<br>  constructor() {}</p>
+<p>  setColor(color) {<br>    // …<br>  }</p>
+<p>  render(area) {<br>    // …<br>  }<br>}</p>
+<p>class Rectangle extends Shape {<br>  constructor() {<br>    super();<br>    this.width = 0;<br>    this.height = 0;<br>  }</p>
+<p>  setWidth(width) {<br>    this.width = width;<br>  }</p>
+<p>  setHeight(height) {<br>    this.height = height;<br>  }</p>
+<p>  getArea() {<br>    return this.width * this.height;<br>  }<br>}</p>
+<p>class Square extends Shape {<br>  constructor() {<br>    super();<br>    this.length = 0;<br>  }</p>
+<p>  setLength(length) {<br>    this.length = length;<br>  }</p>
+<p>  getArea() {<br>    return this.length * this.length;<br>  }<br>}</p>
+<p>function renderLargeShapes(shapes) {<br>  shapes.forEach((shape) =&gt; {<br>    switch (shape.constructor.name) {<br>      case ‘Square’:<br>        shape.setLength(5);<br>      case ‘Rectangle’:<br>        shape.setWidth(4);<br>        shape.setHeight(5);<br>    }</p>
+<pre><code>let area = shape.getArea();
+shape.render(area);
+</code></pre><p>  })<br>}</p>
+<p>let shapes = [new Rectangle(), new Rectangle(), new Square()];<br>renderLargeShapes(shapes);</p>
+<h3 id="接口隔离原则-ISP"><a href="#接口隔离原则-ISP" class="headerlink" title="接口隔离原则(ISP)"></a>接口隔离原则(ISP)</h3><p>JavaScript 中没有接口，所以实行这个原则不能像其它语言那样严格。然而即使对 JavaScript 的弱类型系统来说，它仍然是重要的相关。</p>
+<p>ISP 指出，“客户不应该依赖于那些他们不使用的接口。” 由于 Duck Typing 理论，接口在 JavaScript 中是个隐性契约。</p>
+<p>在 JavaScript 中有一个很好的例子来演示这个原则，即一个拥有巨大设置对象的类。比较好的做法是不要求客户设置大量的选项，因为多数时候他们不需要所有设置。让这些选项成为可选的有助于防止“胖接口”。</p>
+<p>不好:</p>
+<p>class DOMTraverser {<br>  constructor(settings) {<br>    this.settings = settings;<br>    this.setup();<br>  }</p>
+<p>  setup() {<br>    this.rootNode = this.settings.rootNode;<br>    this.animationModule.setup();<br>  }</p>
+<p>  traverse() {<br>    // …<br>  }<br>}</p>
+<p>let $ = new DOMTraverser({<br>  rootNode: document.getElementsByTagName(‘body’),<br>  animationModule: function() {} // 多数时候我们不需要动画<br>  // …<br>});</p>
+<p>好:</p>
+<p>class DOMTraverser {<br>  constructor(settings) {<br>    this.settings = settings;<br>    this.options = settings.options;<br>    this.setup();<br>  }</p>
+<p>  setup() {<br>    this.rootNode = this.settings.rootNode;<br>    this.setupOptions();<br>  }</p>
+<p>  setupOptions() {<br>    if (this.options.animationModule) {<br>      // …<br>    }<br>  }</p>
+<p>  traverse() {<br>    // …<br>  }<br>}</p>
+<p>let $ = new DOMTraverser({<br>  rootNode: document.getElementsByTagName(‘body’),<br>  options: {<br>    animationModule: function() {}<br>  }<br>});</p>
+<h3 id="依赖倒置原则-DIP"><a href="#依赖倒置原则-DIP" class="headerlink" title="依赖倒置原则(DIP)"></a>依赖倒置原则(DIP)</h3><p>这个原则说明了两个基本问题：</p>
+<p>1. 上层模块不应该依赖下层模块，两者都应该依赖抽象。</p>
+<p>2. 抽象不应该依赖于具体实现，具体实现应该依赖于抽象。</p>
+<p>这一开始可能很难理解，但是如果你使用 Angular.js，你已经看到了对这个原则的一种实现形式：依赖注入(DI)。虽然它们不是完全相同的概念，DIP 阻止上层模块去了解下层模块的细节并设置它们。它可以通过 DI 来实现。这带来的巨大好处降低了模块间的耦合。耦合是种非常不好的开发模式，因为它让代码难以重构。</p>
+<p>前提已经提到，JavaScript 没有接口，因此抽象依赖于隐性契约。也就是说，一个对象/类会把方法和属性暴露给另一个对象/类。在下面的例子中，隐性契约是任何用于 <code>InventoryTracker</code> 的 Request 模块都应该拥有 <code>requestItems</code> 方法。</p>
+<p>不好:</p>
+<p>class InventoryTracker {<br>  constructor(items) {<br>    this.items = items;</p>
+<pre><code>// 不好：我们创建了一个依赖于特定请求的实现。
+// 我们应该只依赖请求方法：\`request\` 的 requestItems
+this.requester = new InventoryRequester();
+</code></pre><p>  }</p>
+<p>  requestItems() {<br>    this.items.forEach((item) =&gt; {<br>      this.requester.requestItem(item);<br>    });<br>  }<br>}</p>
+<p>class InventoryRequester {<br>  constructor() {<br>    this.REQ_METHODS = [‘HTTP’];<br>  }</p>
+<p>  requestItem(item) {<br>    // …<br>  }<br>}</p>
+<p>let inventoryTracker = new InventoryTracker([‘apples’, ‘bananas’]);<br>inventoryTracker.requestItems();</p>
+<p>好:</p>
+<p>class InventoryTracker {<br>  constructor(items, requester) {<br>    this.items = items;<br>    this.requester = requester;<br>  }</p>
+<p>  requestItems() {<br>    this.items.forEach((item) =&gt; {<br>      this.requester.requestItem(item);<br>    });<br>  }<br>}</p>
+<p>class InventoryRequesterV1 {<br>  constructor() {<br>    this.REQ_METHODS = [‘HTTP’];<br>  }</p>
+<p>  requestItem(item) {<br>    // …<br>  }<br>}</p>
+<p>class InventoryRequesterV2 {<br>  constructor() {<br>    this.REQ_METHODS = [‘WS’];<br>  }</p>
+<p>  requestItem(item) {<br>    // …<br>  }<br>}</p>
+<p>// 通过构建外部依赖并注入它们，我们很容易把请求模块替换成<br>// 一个使用 WebSocket 的新模块。<br>let inventoryTracker = new InventoryTracker([‘apples’, ‘bananas’], new InventoryRequesterV2());<br>inventoryTracker.requestItems();</p>
+<h3 id="多用-ES6-类语法，少用-ES5-构造函数语法"><a href="#多用-ES6-类语法，少用-ES5-构造函数语法" class="headerlink" title="多用 ES6 类语法，少用 ES5 构造函数语法"></a>多用 ES6 类语法，少用 ES5 构造函数语法</h3><p>在经典的 ES5 的类定义中，很难找到易读的继承、构造、方法定义等。如果你需要继承(你会发现做不到)，那就应该使用类语法。不过，应该尽可能使用小函数而不是类，直到你需要更大更复杂的对象。</p>
+<p>不好:</p>
+<p>var Animal = function(age) {<br>    if (!(this instanceof Animal)) {<br>        throw new Error(“Instantiate Animal with `new`“);<br>    }</p>
+<pre><code>this.age = age;
+</code></pre><p>};</p>
+<p>Animal.prototype.move = function() {};</p>
+<p>var Mammal = function(age, furColor) {<br>    if (!(this instanceof Mammal)) {<br>        throw new Error(“Instantiate Mammal with `new`“);<br>    }</p>
+<pre><code>Animal.call(this, age);
+this.furColor = furColor;
+</code></pre><p>};</p>
+<p>Mammal.prototype = Object.create(Animal.prototype);<br>Mammal.prototype.constructor = Mammal;<br>Mammal.prototype.liveBirth = function() {};</p>
+<p>var Human = function(age, furColor, languageSpoken) {<br>    if (!(this instanceof Human)) {<br>        throw new Error(“Instantiate Human with `new`“);<br>    }</p>
+<pre><code>Mammal.call(this, age, furColor);
+this.languageSpoken = languageSpoken;
+</code></pre><p>};</p>
+<p>Human.prototype = Object.create(Mammal.prototype);<br>Human.prototype.constructor = Human;<br>Human.prototype.speak = function() {};</p>
+<p>好:</p>
+<p>class Animal {<br>    constructor(age) {<br>        this.age = age;<br>    }</p>
+<pre><code>move() {}
+</code></pre><p>}</p>
+<p>class Mammal extends Animal {<br>    constructor(age, furColor) {<br>        super(age);<br>        this.furColor = furColor;<br>    }</p>
+<pre><code>liveBirth() {}
+</code></pre><p>}</p>
+<p>class Human extends Mammal {<br>    constructor(age, furColor, languageSpoken) {<br>        super(age, furColor);<br>        this.languageSpoken = languageSpoken;<br>    }</p>
+<pre><code>speak() {}
+</code></pre><p>}</p>
+<h3 id="使用方法链"><a href="#使用方法链" class="headerlink" title="使用方法链"></a>使用方法链</h3><p>在这里我的意见与《代码整洁之道》的观点不同。有人认为方法链不整洁，而且违反了<a href="https://en.wikipedia.org/wiki/Law_of_Demeter" target="_blank" rel="noopener">得墨忒耳定律</a>。也许他们是对的，但这个模式在 JavaScript 中非常有用，你可以很多库中看到，比如 jQuery 和 Lodash。它让代码变得既简洁又有表现力。在类中，只需要在每个函数结束前返回 <code>this</code>，就实现了链式调用的类方法。</p>
+<p>不好:</p>
+<p>class Car {<br>  constructor() {<br>    this.make = ‘Honda’;<br>    this.model = ‘Accord’;<br>    this.color = ‘white’;<br>  }</p>
+<p>  setMake(make) {<br>    this.name = name;<br>  }</p>
+<p>  setModel(model) {<br>    this.model = model;<br>  }</p>
+<p>  setColor(color) {<br>    this.color = color;<br>  }</p>
+<p>  save() {<br>    console.log(this.make, this.model, this.color);<br>  }<br>}</p>
+<p>let car = new Car();<br>car.setColor(‘pink’);<br>car.setMake(‘Ford’);<br>car.setModel(‘F-150’)<br>car.save();</p>
+<p>好:</p>
+<p>class Car {<br>  constructor() {<br>    this.make = ‘Honda’;<br>    this.model = ‘Accord’;<br>    this.color = ‘white’;<br>  }</p>
+<p>  setMake(make) {<br>    this.name = name;<br>    // NOTE: 返回 this 以实现链式调用<br>    return this;<br>  }</p>
+<p>  setModel(model) {<br>    this.model = model;<br>    // NOTE: 返回 this 以实现链式调用<br>    return this;<br>  }</p>
+<p>  setColor(color) {<br>    this.color = color;<br>    // NOTE: 返回 this 以实现链式调用<br>    return this;<br>  }</p>
+<p>  save() {<br>    console.log(this.make, this.model, this.color);<br>  }<br>}</p>
+<p>let car = new Car()<br>  .setColor(‘pink’)<br>  .setMake(‘Ford’)<br>  .setModel(‘F-150’)<br>  .save();</p>
+<h3 id="多用组合，少用继承"><a href="#多用组合，少用继承" class="headerlink" title="多用组合，少用继承"></a>多用组合，少用继承</h3><p>大家都知道 GoF 的<a href="https://en.wikipedia.org/wiki/Design_Patterns" target="_blank" rel="noopener">设计模式</a>，其中提到应该多用组合而不是继承。对于继承和组合，都有大量的理由在支撑，但这个准则的要点在于，你的想法本能地会想到继承，但这时候不防多思考一下用组合是否能更好的处理问题——某些时候，的确能。</p>
+<p>你可能会考虑：“我什么时候该用继承？”这取决于你遇到的问题。这里有一个不错的清单说明了什么时候用继承比用组合更合适：</p>
+<ol>
+<li><p>你的继承是一个“is-a”关系，而不是“has-a”关系(Animal-&gt;Human 对比 User-&gt;UserDetails)。</p>
+</li>
+<li><p>可以从基础复用代码 (人可以像所有动物一样移动)。</p>
+</li>
+<li><p>你想通过修改基础来实现对所有子类的全局性更改。(改变动物移动时的热量消耗)。</p>
+</li>
+</ol>
+<p>不好:</p>
+<p>class Employee {<br>  constructor(name, email) {<br>    this.name = name;<br>    this.email = email;<br>  }</p>
+<p>  // …<br>}</p>
+<p>// 这样不好，因为 Employees “拥有” 税务数据。EmployeeTaxData 不是属于 Employee 的一个类型<br>class EmployeeTaxData extends Employee {<br>  constructor(ssn, salary) {<br>    super();<br>    this.ssn = ssn;<br>    this.salary = salary;<br>  }</p>
+<p>  // …<br>}</p>
+<p>好:</p>
+<p>class Employee {<br>  constructor(name, email) {<br>    this.name = name;<br>    this.email = email;</p>
+<p>  }</p>
+<p>  setTaxData(ssn, salary) {<br>    this.taxData = new EmployeeTaxData(ssn, salary);<br>  }<br>  // …<br>}</p>
+<p>class EmployeeTaxData {<br>  constructor(ssn, salary) {<br>    this.ssn = ssn;<br>    this.salary = salary;<br>  }</p>
+<p>  // …<br>}</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>测试比生产更重要。如果你不进行测试，或者测试的量不够，那你就不能肯定你写的代码不会造成破坏。测试数量依靠你的开发团队来决定，但 100% 覆盖率(所有语句和分支)能让你拥有巨大的信心，也能使程序员们安心。也就是说，你需要一个不错的测试框架，还需要一个<a href="http://gotwarlost.github.io/istanbul/" target="_blank" rel="noopener">好的覆盖检查工具</a>.</p>
+<p>没有什么理由可以让你不写测试。这里有 <a href="http://jstherightway.org/#testing-tools" target="_blank" rel="noopener">大量不错的 JS 测试框架</a>，可以去找个你们团队喜欢的来用。如果你找一个适合在你的团队中使用的工作，就把为每个新产生的特性/方法添加测试作为目标。如果你喜欢测试驱动开发(TDD)的方法，非常好，但要注意在让你的测试覆盖所有特性，或者重构过的代码。</p>
+<h3 id="每次测试一个概念"><a href="#每次测试一个概念" class="headerlink" title="每次测试一个概念"></a>每次测试一个概念</h3><p>不好:</p>
+<p>const assert = require(‘assert’);</p>
+<p>describe(‘MakeMomentJSGreatAgain’, function() {<br>  it(‘handles date boundaries’, function() {<br>    let date;</p>
+<pre><code>date = new MakeMomentJSGreatAgain(&apos;1/1/2015&apos;);
+date.addDays(30);
+date.shouldEqual(&apos;1/31/2015&apos;);
+
+date = new MakeMomentJSGreatAgain(&apos;2/1/2016&apos;);
+date.addDays(28);
+assert.equal(&apos;02/29/2016&apos;, date);
+
+date = new MakeMomentJSGreatAgain(&apos;2/1/2015&apos;);
+date.addDays(28);
+assert.equal(&apos;03/01/2015&apos;, date);
+</code></pre><p>  });<br>});</p>
+<p>好:</p>
+<p>const assert = require(‘assert’);</p>
+<p>describe(‘MakeMomentJSGreatAgain’, function() {<br>  it(‘handles 30-day months’, function() {<br>    let date = new MakeMomentJSGreatAgain(‘1/1/2015’);<br>    date.addDays(30);<br>    date.shouldEqual(‘1/31/2015’);<br>  });</p>
+<p>  it(‘handles leap year’, function() {<br>    let date = new MakeMomentJSGreatAgain(‘2/1/2016’);<br>    date.addDays(28);<br>    assert.equal(‘02/29/2016’, date);<br>  });</p>
+<p>  it(‘handles non-leap year’, function() {<br>    let date = new MakeMomentJSGreatAgain(‘2/1/2015’);<br>    date.addDays(28);<br>    assert.equal(‘03/01/2015’, date);<br>  });<br>});</p>
+<h2 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h2><h3 id="使用-Promise-而不是回调"><a href="#使用-Promise-而不是回调" class="headerlink" title="使用 Promise 而不是回调"></a>使用 Promise 而不是回调</h3><p>回调并不整洁，它会导致过多的嵌套。ES6 的 Promise 是个内置的全局类型。使用它！</p>
+<p>不好:</p>
+<p>require(‘request’).get(‘<a href="https://en.wikipedia.org/wiki/Robert\_Cecil\_Martin&#39;" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Robert\_Cecil\_Martin&#39;</a>, function(err, response) {<br>  if (err) {<br>    console.error(err);<br>  }<br>  else {<br>    require(‘fs’).writeFile(‘article.html’, response.body, function(err) {<br>      if (err) {<br>        console.error(err);<br>      } else {<br>        console.log(‘File written’);<br>      }<br>    })<br>  }<br>})</p>
+<p>好:</p>
+<p>require(‘request-promise’).get(‘<a href="https://en.wikipedia.org/wiki/Robert\_Cecil\_Martin&#39;" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Robert\_Cecil\_Martin&#39;</a>)<br>  .then(function(response) {<br>    return require(‘fs-promise’).writeFile(‘article.html’, response);<br>  })<br>  .then(function() {<br>    console.log(‘File written’);<br>  })<br>  .catch(function(err) {<br>    console.error(err);<br>  })</p>
+<h3 id="async-await-比-Promise-还整洁"><a href="#async-await-比-Promise-还整洁" class="headerlink" title="async/await 比 Promise 还整洁"></a>async/await 比 Promise 还整洁</h3><p>与回调相当，Promise 已经相当整洁了，但 ES7 带来了更整洁的解决方案 —— async 和 await。你要做的事情就是在一个函数前加上 <code>async</code> 关键字，然后写下命令形式的逻辑，而不再需要 <code>then</code> 链。现在可以使用这个 ES7 特性带来的便利！</p>
+<p>不好:</p>
+<p>require(‘request-promise’).get(‘<a href="https://en.wikipedia.org/wiki/Robert\_Cecil\_Martin&#39;" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Robert\_Cecil\_Martin&#39;</a>)<br>  .then(function(response) {<br>    return require(‘fs-promise’).writeFile(‘article.html’, response);<br>  })<br>  .then(function() {<br>    console.log(‘File written’);<br>  })<br>  .catch(function(err) {<br>    console.error(err);<br>  })</p>
+<p>好:</p>
+<p>async function getCleanCodeArticle() {<br>  try {<br>    var request = await require(‘request-promise’)<br>    var response = await request.get(‘<a href="https://en.wikipedia.org/wiki/Robert\_Cecil\_Martin&#39;)" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Robert\_Cecil\_Martin&#39;)</a>;<br>    var fileHandle = await require(‘fs-promise’);</p>
+<pre><code>await fileHandle.writeFile(&apos;article.html&apos;, response);
+console.log(&apos;File written&apos;);
+</code></pre><p>  } catch(err) {<br>      console.log(err);<br>    }<br>  }</p>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><p>抛出错误是件好事！这表示运行时已经成功检测到程序出错了，它停止当前调用框上的函数执行，并中止进程(在 Node 中)，最后在控制台通知你，并输出栈跟踪信息。</p>
+<h3 id="不要忽略捕捉到的错误"><a href="#不要忽略捕捉到的错误" class="headerlink" title="不要忽略捕捉到的错误"></a>不要忽略捕捉到的错误</h3><p>捕捉到错误却什么也不错，你就失去了纠正错误的机会。多数情况下把错误记录到控制台(<code>console.log</code>)也不比忽略它好多少，因为在少量的控制台信息中很难发现这一条。如果尝试在 <code>try/catch</code> 中封装代码，就意味着你知道这里可能发生错，你应该在错误发生的时候有应对的计划、或者处理办法。</p>
+<p>不好:</p>
+<p>try {<br>  functionThatMightThrow();<br>} catch (error) {<br>  console.log(error);<br>}</p>
+<p>好:</p>
+<p>try {<br>  functionThatMightThrow();<br>} catch (error) {<br>  // 选择之一(比 console.log 更闹心)：<br>  console.error(error);<br>  // 另一个选择：<br>  notifyUserOfError(error);<br>  // 另一个选择：<br>  reportErrorToService(error);<br>  // 或者所有上述三种选择！<br>}</p>
+<h3 id="不要忽视被拒绝的Promise"><a href="#不要忽视被拒绝的Promise" class="headerlink" title="不要忽视被拒绝的Promise"></a>不要忽视被拒绝的Promise</h3><p>这一条与不要忽略从 <code>try/catch</code> 捕捉到的错误有相同的原因。</p>
+<p>不好:</p>
+<p>getdata()<br>.then(data =&gt; {<br>  functionThatMightThrow(data);<br>})<br>.catch(error =&gt; {<br>  console.log(error);<br>});</p>
+<p>好:</p>
+<p>getdata()<br>.then(data =&gt; {<br>  functionThatMightThrow(data);<br>})<br>.catch(error =&gt; {<br>  // 选择之一(比 console.log 更闹心)：<br>  console.error(error);<br>  // 另一个选择：<br>  notifyUserOfError(error);<br>  // 另一个选择：<br>  reportErrorToService(error);<br>  // 或者所有上述三种选择！<br>});</p>
+<h2 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h2><p>格式是个很主观的东西，像这里提到的许多规则一，你不必完全遵循。要点不在于争论格式。<a href="http://standardjs.com/rules.html" target="_blank" rel="noopener">大量工具</a> 可以自动处理优化格式。用一个！让工程师争论格式问题简直就是在浪费时间和金钱。</p>
+<p>对于那些不能自动处理的格式(可以自动处理的包括缩进、Tab或空格、双引号或单引用等)，就看看这里的指导。</p>
+<h3 id="使用一致的大小写"><a href="#使用一致的大小写" class="headerlink" title="使用一致的大小写"></a>使用一致的大小写</h3><p>JavaScript 是无类型的，所以大小写可以帮助你了解变量、函数等。这些规则具有较强的主观性，所以你的团队应该选择需要的。重点不在于你选择了什么，而在于要始终保持一致。</p>
+<p>不好:</p>
+<p>var DAYS_IN_WEEK = 7;<br>var daysInMonth = 30;</p>
+<p>var songs = [‘Back In Black’, ‘Stairway to Heaven’, ‘Hey Jude’];<br>var Artists = [‘ACDC’, ‘Led Zeppelin’, ‘The Beatles’];</p>
+<p>function eraseDatabase() {}<br>function restore_database() {}</p>
+<p>class animal {}<br>class Alpaca {}</p>
+<p>好:</p>
+<p>var DAYS_IN_WEEK = 7;<br>var DAYS_IN_MONTH = 30;</p>
+<p>var songs = [‘Back In Black’, ‘Stairway to Heaven’, ‘Hey Jude’];<br>var artists = [‘ACDC’, ‘Led Zeppelin’, ‘The Beatles’];</p>
+<p>function eraseDatabase() {}<br>function restoreDatabase() {}</p>
+<p>class Animal {}<br>class Alpaca {}</p>
+<h3 id="函数调用者和被调用者应该尽可能放在一起"><a href="#函数调用者和被调用者应该尽可能放在一起" class="headerlink" title="函数调用者和被调用者应该尽可能放在一起"></a>函数调用者和被调用者应该尽可能放在一起</h3><p>如果一个函数调用另一个函数，那应该让他们在源文件中的位置非常接近。理想情况下应该把调用者放在被调用者的正上方，这会让你的代码更易读，因为我们都习惯从上往下读代码，就像读报纸那样。</p>
+<p>不好:</p>
+<p>class PerformanceReview {<br>  constructor(employee) {<br>    this.employee = employee;<br>  }</p>
+<p>  lookupPeers() {<br>    return db.lookup(this.employee, ‘peers’);<br>  }</p>
+<p>  lookupMananger() {<br>    return db.lookup(this.employee, ‘manager’);<br>  }</p>
+<p>  getPeerReviews() {<br>    let peers = this.lookupPeers();<br>    // …<br>  }</p>
+<p>  perfReview() {<br>      getPeerReviews();<br>      getManagerReview();<br>      getSelfReview();<br>  }</p>
+<p>  getManagerReview() {<br>    let manager = this.lookupManager();<br>  }</p>
+<p>  getSelfReview() {<br>    // …<br>  }<br>}</p>
+<p>let review = new PerformanceReview(user);<br>review.perfReview();</p>
+<p>好:</p>
+<p>class PerformanceReview {<br>  constructor(employee) {<br>    this.employee = employee;<br>  }</p>
+<p>  perfReview() {<br>      getPeerReviews();<br>      getManagerReview();<br>      getSelfReview();<br>  }</p>
+<p>  getPeerReviews() {<br>    let peers = this.lookupPeers();<br>    // …<br>  }</p>
+<p>  lookupPeers() {<br>    return db.lookup(this.employee, ‘peers’);<br>  }</p>
+<p>  getManagerReview() {<br>    let manager = this.lookupManager();<br>  }</p>
+<p>  lookupMananger() {<br>    return db.lookup(this.employee, ‘manager’);<br>  }</p>
+<p>  getSelfReview() {<br>    // …<br>  }<br>}</p>
+<p>let review = new PerformanceReview(employee);<br>review.perfReview();</p>
+<h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h2><h3 id="只注释业务逻辑复杂的内容"><a href="#只注释业务逻辑复杂的内容" class="headerlink" title="只注释业务逻辑复杂的内容"></a>只注释业务逻辑复杂的内容</h3><p>注释是用来解释代码的，而不是必须的。好的代码应该 自注释。</p>
+<p>不好:</p>
+<p>function hashIt(data) {<br>  // Hash 码<br>  var hash = 0;</p>
+<p>  // 字符串长度<br>  var length = data.length;</p>
+<p>  // 遍历数据中所有字符<br>  for (var i = 0; i &lt; length; i++) {<br>    // 获取字符编码<br>    var char = data.charCodeAt(i);<br>    // 生成 Hash<br>    hash = ((hash &lt;&lt; 5) - hash) + char;<br>    // 转换为32位整数<br>    hash = hash &amp; hash;<br>  }<br>}</p>
+<p>好:</p>
+<p>function hashIt(data) {<br>  var hash = 0;<br>  var length = data.length;</p>
+<p>  for (var i = 0; i &lt; length; i++) {<br>    var char = data.charCodeAt(i);<br>    hash = ((hash &lt;&lt; 5) - hash) + char;</p>
+<pre><code>// 转换为32位整数
+hash = hash &amp; hash;
+</code></pre><p>  }<br>}</p>
+<h3 id="不要把注释掉的代码留在代码库中"><a href="#不要把注释掉的代码留在代码库中" class="headerlink" title="不要把注释掉的代码留在代码库中"></a>不要把注释掉的代码留在代码库中</h3><p>版本控制存在的原因就是保存你的历史代码。</p>
+<p>不好:</p>
+<p>doStuff();<br>// doOtherStuff();<br>// doSomeMoreStuff();<br>// doSoMuchStuff();</p>
+<p>好:</p>
+<p>doStuff();</p>
+<h3 id="不需要日志式的注释"><a href="#不需要日志式的注释" class="headerlink" title="不需要日志式的注释"></a>不需要日志式的注释</h3><p>记住，使用版本控制！没用的代码、注释掉的代码，尤其是日志式的注释。用 <code>git log</code> 来获取历史信息！</p>
+<p>不好:</p>
+<p>/**<br> * 2016-12-20: Removed monads, didn’t understand them (RM)<br> * 2016-10-01: Improved using special monads (JP)<br> * 2016-02-03: Removed type-checking (LI)<br> * 2015-03-14: Added combine with type-checking (JR)<br> */<br>function combine(a, b) {<br>  return a + b;<br>}</p>
+<p>好:</p>
+<p>function combine(a, b) {<br>  return a + b;<br>}</p>
+<h3 id="避免位置标记"><a href="#避免位置标记" class="headerlink" title="避免位置标记"></a>避免位置标记</h3><p>位置标记通常只会添加垃圾信息。通过对函数或变量名以及适当的缩进就能为代码带来良好的可视化结构。</p>
+<p>不好:</p>
+<p>////////////////////////////////////////////////////////////////////////////////<br>// Scope Model Instantiation<br>////////////////////////////////////////////////////////////////////////////////<br>let $scope.model = {<br>  menu: ‘foo’,<br>  nav: ‘bar’<br>};</p>
+<p>////////////////////////////////////////////////////////////////////////////////<br>// Action setup<br>////////////////////////////////////////////////////////////////////////////////<br>let actions = function() {<br>  // …<br>}</p>
+<p>好:</p>
+<p>let $scope.model = {<br>  menu: ‘foo’,<br>  nav: ‘bar’<br>};</p>
+<p>let actions = function() {<br>  // …<br>}</p>
+<h3 id="避免在源文件中添加版权注释"><a href="#避免在源文件中添加版权注释" class="headerlink" title="避免在源文件中添加版权注释"></a>避免在源文件中添加版权注释</h3><p>这是代码文件树顶层的 <code>LICENSE</code> 文件应该干的事情。</p>
+<p>不好:</p>
+<p>/*<br>The MIT License (MIT)</p>
+<p>Copyright (c) 2016 Ryan McDermott</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy<br>of this software and associated documentation files (the “Software”), to deal<br>in the Software without restriction, including without limitation the rights<br>to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>copies of the Software, and to permit persons to whom the Software is<br>furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all<br>copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<br>SOFTWARE<br>*/</p>
+<p>function calculateBill() {<br>  // …<br>}</p>
+<p>好:</p>
+<p>function calculateBill() {<br>  // …<br>}</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://sensitivemix.github.io/2018/12/01/JavaScript-代码整洁之道中文版/" title="JavaScript 代码整洁之道中文版" target="_blank" rel="external">https://sensitivemix.github.io/2018/12/01/JavaScript-代码整洁之道中文版/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/SensitiveMix" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/SensitiveMix" target="_blank"><span class="text-dark">jack sun</span><small class="ml-1x">Full Stack Developer</small></a></h3>
+        <div>个人简介。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom="">
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2018/12/01/如何构建易于运维的后端应用/" title="如何构建易于运维的后端应用"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2018/12/01/HTTP-状态码整理/" title="HTTP 状态码整理"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope="" itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/SensitiveMix" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000">
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top">
+  
+  
+  <title>InfluxDB 学习指南 | Hexo</title>
+  <meta name="description" content="前言 influxdb是目前比较流行的时间序列数据库。  何谓时间序列数据库？什么是时间序列数据库，最简单的定义就是数据格式里包含Timestamp字段的数据，比如某一时间环境的温度，CPU的使用率等。但是，有什么数据不包含Timestamp呢？几乎所有的数据其实都可以打上一个Timestamp字段。时间序列数据的更重要的一个属性是如何去查询它，包括数据的过滤，计算等等。  InfluxdbInf">
+<meta name="keywords" content="Database,InfluxDB">
+<meta property="og:type" content="article">
+<meta property="og:title" content="InfluxDB 学习指南">
+<meta property="og:url" content="https://sensitivemix.github.io/2018/12/01/InfluxDB-学习指南/index.html">
+<meta property="og:site_name" content="孙祁的博客">
+<meta property="og:description" content="前言 influxdb是目前比较流行的时间序列数据库。  何谓时间序列数据库？什么是时间序列数据库，最简单的定义就是数据格式里包含Timestamp字段的数据，比如某一时间环境的温度，CPU的使用率等。但是，有什么数据不包含Timestamp呢？几乎所有的数据其实都可以打上一个Timestamp字段。时间序列数据的更重要的一个属性是如何去查询它，包括数据的过滤，计算等等。  InfluxdbInf">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994601-9cc22a93bb379d76.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994601-f528ff65d64cf860.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994601-cb52cbd8bf20d41b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-04-14T02:29:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="InfluxDB 学习指南">
+<meta name="twitter:description" content="前言 influxdb是目前比较流行的时间序列数据库。  何谓时间序列数据库？什么是时间序列数据库，最简单的定义就是数据格式里包含Timestamp字段的数据，比如某一时间环境的温度，CPU的使用率等。但是，有什么数据不包含Timestamp呢？几乎所有的数据其实都可以打上一个Timestamp字段。时间序列数据的更重要的一个属性是如何去查询它，包括数据的过滤，计算等等。  InfluxdbInf">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3994601-9cc22a93bb379d76.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://sensitivemix.github.io/2018/12/01/InfluxDB-学习指南/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="孙祁的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/SensitiveMix" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">jack sun</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Full Stack Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> nanjing, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech="">
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope="" itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/SensitiveMix" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope="" itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/前沿技术/">前沿技术</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/学习资料/">学习资料</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发工具/">开发工具</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/总结/">总结</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/计算机网络/">计算机网络</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BestPractice/">BestPractice</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Blockchain/">Blockchain</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C-Pointer/">C Pointer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CI/">CI</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cluster/">Cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CodeCoverage/">CodeCoverage</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Database/">Database</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DesignPattern/">DesignPattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Frontend/">Frontend</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/InfluxDB/">InfluxDB</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/">Javascript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jquery/">Jquery</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Login/">Login</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MockService/">MockService</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MongoDB/">MongoDB</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Socket-io/">Socket.io</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SqlServer/">SqlServer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tutorial/">Tutorial</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/BestPractice/" style="font-size: 13px;">BestPractice</a> <a href="/tags/Blockchain/" style="font-size: 13.33px;">Blockchain</a> <a href="/tags/C-Pointer/" style="font-size: 13px;">C Pointer</a> <a href="/tags/CI/" style="font-size: 13px;">CI</a> <a href="/tags/Cluster/" style="font-size: 13px;">Cluster</a> <a href="/tags/CodeCoverage/" style="font-size: 13px;">CodeCoverage</a> <a href="/tags/Database/" style="font-size: 14px;">Database</a> <a href="/tags/DesignPattern/" style="font-size: 13px;">DesignPattern</a> <a href="/tags/Frontend/" style="font-size: 13.33px;">Frontend</a> <a href="/tags/InfluxDB/" style="font-size: 13.33px;">InfluxDB</a> <a href="/tags/Javascript/" style="font-size: 13.33px;">Javascript</a> <a href="/tags/Jquery/" style="font-size: 13px;">Jquery</a> <a href="/tags/Login/" style="font-size: 13px;">Login</a> <a href="/tags/MockService/" style="font-size: 13px;">MockService</a> <a href="/tags/MongoDB/" style="font-size: 13.33px;">MongoDB</a> <a href="/tags/Node-js/" style="font-size: 14px;">Node.js</a> <a href="/tags/Redis/" style="font-size: 13px;">Redis</a> <a href="/tags/Socket-io/" style="font-size: 13px;">Socket.io</a> <a href="/tags/SqlServer/" style="font-size: 13px;">SqlServer</a> <a href="/tags/Tutorial/" style="font-size: 13.67px;">Tutorial</a> <a href="/tags/http/" style="font-size: 13px;">http</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">九月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/数据库/">数据库</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/01/07/数据库原理/" class="title">数据库原理</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-01-07T14:08:33.000Z" itemprop="datePublished">2019-01-07</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/数据库/">数据库</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/01/06/如何设计关系型数据库/" class="title">如何设计关系型数据库</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-01-06T07:33:07.000Z" itemprop="datePublished">2019-01-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/01/01/Redis-的持久和取舍/" class="title">Redis 的持久和取舍</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-01-01T13:32:37.000Z" itemprop="datePublished">2019-01-01</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/开发/">开发</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/12/02/跨域与安全/" class="title">跨域与安全</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-12-02T14:03:24.000Z" itemprop="datePublished">2018-12-02</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/学习资料/">学习资料</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/12/01/如何构建易于运维的后端应用/" class="title">如何构建易于运维的后端应用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-12-01T06:42:27.000Z" itemprop="datePublished">2018-12-01</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-InfluxDB-学习指南" class="article article-type-post" itemscope="" itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      InfluxDB 学习指南
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/12/01/InfluxDB-学习指南/" class="article-date">
+	  <time datetime="2018-12-01T06:23:15.000Z" itemprop="datePublished">2018-12-01</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/开发/">开发</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/Database/">Database</a>, <a class="article-tag-link" href="/tags/InfluxDB/">InfluxDB</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/12/01/InfluxDB-学习指南/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><hr>
+<p>influxdb是目前比较流行的时间序列数据库。</p>
+<ul>
+<li>何谓时间序列数据库？<br>什么是时间序列数据库，最简单的定义就是数据格式里包含Timestamp字段的数据，比如某一时间环境的温度，CPU的使用率等。但是，有什么数据不包含Timestamp呢？几乎所有的数据其实都可以打上一个Timestamp字段。时间序列数据的更重要的一个属性是如何去查询它，包括数据的过滤，计算等等。</li>
+</ul>
+<h4 id="Influxdb"><a href="#Influxdb" class="headerlink" title="Influxdb"></a>Influxdb</h4><p>Influxdb是一个开源的分布式时序、时间和指标数据库，使用go语言编写，无需外部依赖。<br>它有三大特性：</p>
+<ol>
+<li><p>时序性（Time Series）：与时间相关的函数的灵活使用（诸如最大、最小、求和等）；</p>
+</li>
+<li><p>度量（Metrics）：对实时大量数据进行计算；</p>
+</li>
+<li><p>事件（Event）：支持任意的事件数据，换句话说，任意事件的数据我们都可以做操作。</p>
+</li>
+</ol>
+<p>同时，它有以下几大特点：</p>
+<ul>
+<li><p>schemaless(无结构)，可以是任意数量的列；</p>
+</li>
+<li><p>min, max, sum, count, mean, median 一系列函数，方便统计；</p>
+</li>
+<li><p>Native HTTP API, 内置http支持，使用http读写；</p>
+</li>
+<li><p>Powerful Query Language 类似sql；</p>
+</li>
+<li><p>Built-in Explorer 自带管理工具。</p>
+</li>
+</ul>
+<h3 id="Influxdb安装"><a href="#Influxdb安装" class="headerlink" title="Influxdb安装"></a>Influxdb安装</h3><hr>
+<blockquote>
+<p>注：本文使用的influxdb version是1.0.2</p>
+</blockquote>
+<p>在讲解具体的安装步骤之前，先说说influxdb的两个http端口：8083和8086</p>
+<ul>
+<li><p>port 8083：管理页面端口，访问localhost:8083可以进入你本机的influxdb管理页面；</p>
+</li>
+<li><p>port 8086：http连接influxdb client端口，一般使用该端口往本机的influxdb读写数据。</p>
+</li>
+</ul>
+<p><strong>OS X</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew update</span><br><span class="line">brew install influxdb</span><br></pre></td></tr></table></figure>
+<p><strong>Docker Image</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull influxdb</span><br></pre></td></tr></table></figure>
+<p><strong>Ubuntu &amp; Debian</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://dl.influxdata.com/influxdb/releases/influxdb_1.0.2_amd64.deb</span><br><span class="line">sudo dpkg -i influxdb_1.0.2_amd64.deb</span><br></pre></td></tr></table></figure>
+<p><strong>RedHat &amp; CentOS</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://dl.influxdata.com/influxdb/releases/influxdb-1.0.2.x86_64.rpm</span><br><span class="line">sudo yum localinstall influxdb-1.0.2.x86_64.rpm</span><br></pre></td></tr></table></figure>
+<p><strong>Standalone Linux Binaries (64-bit)</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://dl.influxdata.com/influxdb/releases/influxdb-1.0.2_linux_amd64.tar.gz  </span><br><span class="line">tar xvfz influxdb-1.0.2_linux_amd64.tar.gz</span><br></pre></td></tr></table></figure>
+<p><strong>Standalone Linux Binaries (32-bit)</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://dl.influxdata.com/influxdb/releases/influxdb-1.0.2_linux_i386.tar.gz</span><br><span class="line">tar xvfz influxdb-1.0.2_linux_i386.tar.gz</span><br></pre></td></tr></table></figure>
+<p><strong>Standalone Linux Binaries (ARM)</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://dl.influxdata.com/influxdb/releases/influxdb-1.0.2_linux_armhf.tar.gz</span><br><span class="line">tar xvfz influxdb-1.0.2_linux_armhf.tar.gz</span><br></pre></td></tr></table></figure>
+<p><strong>How to start？</strong><br>安装完之后，如何启动呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service influxdb start</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew services start influxdb (OSX 启动 influxdb)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew services stop influxdb (OSX 关闭 influxdb)</span><br></pre></td></tr></table></figure>
+<p>到这里influxdb安装启动完成，可以访问influxdb管理页面：<a href="http://localhost:8083" target="_blank" rel="noopener">本地管理页面</a>，该版本没有登录用户及密码，可以自行设置读写的用户名和密码。</p>
+<p><strong>如何在命令行使用</strong><br>安装完毕之后，如何在命令行使用呢？</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3994601-9cc22a93bb379d76.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>influxdb在命令行中使用</p>
+<h3 id="influxdb基本操作"><a href="#influxdb基本操作" class="headerlink" title="influxdb基本操作"></a>influxdb基本操作</h3><hr>
+<h4 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h4><p>在具体的讲解influxdb的相关操作之前先说说influxdb的一些专有名词，这些名词代表什么。</p>
+<h5 id="influxdb相关名词"><a href="#influxdb相关名词" class="headerlink" title="influxdb相关名词"></a>influxdb相关名词</h5><ul>
+<li><p>database：数据库；</p>
+</li>
+<li><p>measurement：数据库中的表；</p>
+</li>
+<li><p>points：表里面的一行数据。</p>
+</li>
+</ul>
+<h5 id="influxDB中独有的一些概念"><a href="#influxDB中独有的一些概念" class="headerlink" title="influxDB中独有的一些概念"></a>influxDB中独有的一些概念</h5><p>Point由<strong>时间戳</strong>（time）、<strong>数据</strong>（field）和<strong>标签</strong>（tags）组成。</p>
+<ul>
+<li><p>time：每条数据记录的时间，也是数据库自动生成的主索引；</p>
+</li>
+<li><p>fields：各种记录的值；</p>
+</li>
+<li><p>tags：各种有索引的属性。</p>
+</li>
+</ul>
+<p>还有一个重要的名词：<strong>series</strong><br>所有在数据库中的数据，都需要通过图表来表示，series表示这个表里面的所有的数据可以在图标上画成几条线（注：线条的个数由tags排列组合计算出来）<br>举个简单的小栗子：<br>有如下数据：  </p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3994601-f528ff65d64cf860.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>error_time</p>
+<p>它的series为：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3994601-cb52cbd8bf20d41b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>error_time_series</p>
+<h4 id="influxdb基本操作-1"><a href="#influxdb基本操作-1" class="headerlink" title="influxdb基本操作"></a>influxdb基本操作</h4><ul>
+<li><p><strong>数据库与表的操作</strong><br>可以直接在web管理页面做操作，当然也可以命令行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#创建数据库</span><br><span class="line">create database &quot;db_name&quot;</span><br><span class="line">#显示所有的数据库</span><br><span class="line">show databases</span><br><span class="line">#删除数据库</span><br><span class="line">drop database &quot;db_name&quot;</span><br><span class="line">#使用数据库</span><br><span class="line">use db_name</span><br><span class="line">#显示该数据库中所有的表</span><br><span class="line">show measurements</span><br><span class="line">#创建表，直接在插入数据的时候指定表名</span><br><span class="line">insert test,host=127.0.0.1,monitor_name=test count=1</span><br><span class="line">#删除表</span><br><span class="line">drop measurement &quot;measurement_name&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>增</strong><br>向数据库中插入数据。</p>
+<ul>
+<li><p>通过命令行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">use testDb</span><br><span class="line">insert test,host=127.0.0.1,monitor_name=test count=1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过http接口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -i -XPOST &apos;http://127.0.0.1:8086/write?db=testDb&apos; --data-binary &apos;test,host=127.0.0.1,monitor_name=test count=1&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>读者看到这里可能会观察到插入的数据的格式貌似比较奇怪，这是因为influxDB存储数据采用的是Line Protocol格式。那么何谓Line Protoco格式？</p>
+<p><strong>Line Protocol格式：</strong>写入数据库的Point的固定格式。<br>在上面的两种插入数据的方法中都有这样的一部分：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">test,host=127.0.0.1,monitor_name=test count=1</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ol>
+<li><p>test：表名；</p>
+</li>
+<li><p>host=127.0.0.1,monitor_name=test：tag；</p>
+</li>
+<li><p>count=1：field</p>
+</li>
+</ol>
+<p>想对此格式有详细的了解参见<a href="https://docs.influxdata.com/influxdb/v0.10/write_protocols/line/" target="_blank" rel="noopener">官方文档</a></p>
+</li>
+<li><p><strong>查</strong><br>查询数据库中的数据。</p>
+<ul>
+<li><p>通过命令行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from test order by time desc</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过http接口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -G &apos;http://localhost:8086/query?pretty=true&apos; --data-urlencode &quot;db=testDb&quot; --data-urlencode &quot;q=select * from test order by time desc&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>influxDB是支持类sql语句的，具体的查询语法都差不多，这里就不再做详细的赘述了。</p>
+</li>
+<li><p><strong>数据保存策略（Retention Policies）</strong><br>influxDB是没有提供直接删除数据记录的方法，但是提供数据保存策略，主要用于指定数据保留时间，超过指定时间，就删除这部分数据。</p>
+<ul>
+<li><p>查看当前数据库Retention Policies</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show retention policies on &quot;db_name&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>![](http://upload-images.jianshu.io/upload_images/3994601-4dbf9942cc0f671a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+</code></pre><p>retention_policies</p>
+<pre><code>*   创建新的Retention Policies
+
+    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create retention policy &quot;rp_name&quot; on &quot;db_name&quot; duration 3w replication 1 default</span><br></pre></td></tr></table></figure>
+
+    *   rp_name：策略名；
+
+    *   db_name：具体的数据库名；
+
+    *   3w：保存3周，3周之前的数据将被删除，influxdb具有各种事件参数，比如：h（小时），d（天），w（星期）；
+
+    *   replication 1：副本个数，一般为1就可以了；
+
+    *   default：设置为默认策略
+
+*   修改Retention Policies
+
+    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter retention policy &quot;rp_name&quot; on &quot;db_name&quot; duration 30d default</span><br></pre></td></tr></table></figure>
+
+*   删除Retention Policies
+
+    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drop retention policy &quot;rp_name&quot;</span><br></pre></td></tr></table></figure>
+</code></pre><ul>
+<li><p><strong>连续查询（Continous Queries）</strong><br>当数据超过保存策略里指定的时间之后就会被删除，但是这时候可能并不想数据被完全删掉，怎么办？<br>influxdb提供了联系查询，可以做数据统计采样。</p>
+<ul>
+<li><p>查看数据库的Continous Queries</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show continuous queries</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>![](http://upload-images.jianshu.io/upload_images/3994601-d0d2b55ee261869d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+</code></pre><p>continuous_queries.</p>
+<pre><code>*   创建新的Continous Queries
+
+    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create continous query cq_name on db_name begin select sum(count) into new_table_name from table_name group by time(30m) end</span><br></pre></td></tr></table></figure>
+
+    *   cq_name：连续查询名字；
+
+    *   db_name：数据库名字；
+
+    *   sum(count)：计算总和；
+
+    *   table_name：当前表名；
+
+    *   new_table_name：存新的数据的表名；
+
+    *   30m：时间间隔为30分钟
+
+*   删除Continous Queries
+
+    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drop continous query cp_name on db_name</span><br></pre></td></tr></table></figure>
+</code></pre><ul>
+<li><p><strong>用户管理</strong><br>可以直接在web管理页面做操作，也可以命令行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#显示用户  </span><br><span class="line">show users</span><br><span class="line">#创建用户</span><br><span class="line">create user &quot;username&quot; with password &apos;password&apos;</span><br><span class="line">#创建管理员权限用户create user &quot;username&quot; with password &apos;password&apos; with all privileges</span><br><span class="line">#删除用户</span><br><span class="line">drop user &quot;username&quot;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://sensitivemix.github.io/2018/12/01/InfluxDB-学习指南/" title="InfluxDB 学习指南" target="_blank" rel="external">https://sensitivemix.github.io/2018/12/01/InfluxDB-学习指南/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/SensitiveMix" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/SensitiveMix" target="_blank"><span class="text-dark">jack sun</span><small class="ml-1x">Full Stack Developer</small></a></h3>
+        <div>个人简介。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom="">
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2018/12/01/浅析-Node-js-Event-Loop/" title="浅析 Node.js Event Loop"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2018/11/27/mongoDB-执行计划分析/" title="mongoDB 执行计划分析"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope="" itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/SensitiveMix" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>
