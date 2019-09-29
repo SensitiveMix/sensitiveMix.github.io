@@ -39,7 +39,7 @@
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2019/png/102578/1568965715302-26c85fd2-6793-4fba-99ef-a7b41bd934e2.png#align=left&display=inline&height=299&name=image.png&originHeight=299&originWidth=785&size=44224&status=done&width=785">
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2019/png/102578/1568965261595-e63a3d0c-a034-4365-a7b3-efc9ed344b47.png#align=left&display=inline&height=305&name=image.png&originHeight=305&originWidth=1807&size=70567&status=done&width=1807">
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2019/png/102578/1568966408278-29a8c6fb-bdd6-4ba0-b627-3595274a5763.png#align=left&display=inline&height=889&name=image.png&originHeight=889&originWidth=1221&size=151816&status=done&width=1221">
-<meta property="og:updated_time" content="2019-09-29T02:46:40.000Z">
+<meta property="og:updated_time" content="2019-09-29T02:48:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Sequelize ORM 高并发实战">
 <meta name="twitter:description" content="Sequelize ORM  高并发实战  Sequelize 是一款优秀的数据库 ORM框架，支持 mysql、postgres、sqlite、mariadb、mssql。使用方法非常灵活多变，GitHub star 数目前 20k 左右，其周边工具 sequelize-auto 可自动从数据库生成模型文件，sequelize-cli 可以依据模型文件创建数据库，能力非常强大。   前言目前在">
@@ -400,11 +400,11 @@
 </blockquote>
 <p><a name="Kg2dp"></a></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>目前在 CAS Node 项目中，基本上都是用的这个 ORM 来和 MSSQL 进行交互访问，如果没有高并发访问冲击的情况下，一般使用这个 ORM 第三库不会出现什么性能问题。但是遇到需要频繁操作 DB ，就可能会做成生产环境上面 DB DTU HIGH 的行为。</p>
-<p><img src="https://cdn.nlark.com/yuque/0/2019/png/102578/1568961829317-00da7c2f-f1a2-42c8-a2ff-645b291013ea.png#align=left&amp;display=inline&amp;height=619&amp;name=image.png&amp;originHeight=619&amp;originWidth=1835&amp;size=174918&amp;status=done&amp;width=1835" alt="image.png">100% DTU Usage<br></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2019/png/102578/1568961829317-00da7c2f-f1a2-42c8-a2ff-645b291013ea.png#align=left&amp;display=inline&amp;height=619&amp;name=image.png&amp;originHeight=619&amp;originWidth=1835&amp;size=174918&amp;status=done&amp;width=1835" alt="image.png"><br>100% DTU Usage<br></p>
 <p><a name="ExCK8"></a></p>
 <h2 id="架构图一览"><a href="#架构图一览" class="headerlink" title="架构图一览"></a>架构图一览</h2><p>目前  CAS 处理 ATP DP Policy Detection Mail 架构图如下所示：</p>
 <p><img src="https://cdn.nlark.com/yuque/0/2019/png/102578/1568963901086-44fbb725-53c9-4ed0-ab23-975aa47fcfdc.png#align=left&amp;display=inline&amp;height=902&amp;name=image.png&amp;originHeight=902&amp;originWidth=1359&amp;size=160382&amp;status=done&amp;width=1359" alt="image.png"><br><a name="oYm7D"></a></p>
-<p>##<br><a name="vUfQw"></a></p>
+<p><a name="vUfQw"></a></p>
 <h2 id="问题定位"><a href="#问题定位" class="headerlink" title="问题定位"></a>问题定位</h2><p>我们目前使用的是 Azure MSSQL DB，生产环境中从它自带的监控后台我们可以查看到每个语句的查看次数以及那些语句导致了 High DTU 的问题。</p>
 <p><a name="T472o"></a></p>
 <h3 id="初定位"><a href="#初定位" class="headerlink" title="初定位"></a>初定位</h3><p>根据 OP 同学的给出的反馈，我们发现到线上有一个查询语句时间过长，在此时间点 DB 的 DTU 也非常高，这时候我们怀疑是这条语句导致的。<br><img src="https://cdn.nlark.com/yuque/0/2019/png/102578/1568962535215-feb4e7f6-6855-462c-a5d6-ce6dbbb47bc5.png#align=left&amp;display=inline&amp;height=179&amp;name=image.png&amp;originHeight=179&amp;originWidth=368&amp;size=13786&amp;status=done&amp;width=368" alt="image.png"><img src="https://cdn.nlark.com/yuque/0/2019/png/102578/1568962508765-b4de3094-a0fb-44d4-a37f-95ad6ea1be0b.png#align=left&amp;display=inline&amp;height=245&amp;name=image.png&amp;originHeight=246&amp;originWidth=362&amp;size=16653&amp;status=done&amp;width=360" alt="image.png"></p>
